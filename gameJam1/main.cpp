@@ -6,6 +6,7 @@
 #include "man.h"
 #include "button.h"
 #include "card.h"
+#include "world.h"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wnarrowing"
@@ -44,8 +45,10 @@ vector<Card> dealCards(Graphics& g,int numCards, int groundY, int spacing, int c
 void graphicsMain(Graphics& g)
 {
     srand(time(nullptr));
-    // environment things
+    // world
+    World world;
     Vec2d groundPos{0, (g.height()/16)*8};
+    world.groundPos = groundPos;
 
     // men things
     Vec2d manVelocity {0, -10};
@@ -63,12 +66,6 @@ void graphicsMain(Graphics& g)
     int animationCount = 0;
 
 
-    // stats
-    int population = 50;
-    int environment = 50;
-    int food = 50;
-    int water = 50;
-
     // g.draw
     while (g.draw())
     {
@@ -78,8 +75,7 @@ void graphicsMain(Graphics& g)
         Vec2d mousePos = g.mousePos();
 
         // environment
-        Vec2d groundWH{g.width(), 50};
-        g.rect(groundPos, groundWH.x, groundWH.y, GREEN, GREEN);
+        world.draw(g);
         g.image({spacing + cardSpace*(numCards-1), groundPos.y - 200}, example.width + 10, example.height + 10, cardBack);
 
         // men
@@ -95,26 +91,6 @@ void graphicsMain(Graphics& g)
             c.draw(g, true);
         }
 
-        //display stats
-        int statSize = 30;
-        int topMar = 30;
-        Vec2d popLocation;
-        Button pop{"population: " + to_string(population), statSize, popLocation};
-        popLocation= {(g.width()-(pop.width/2))/5,g.height() - topMar};
-        pop.draw(g);
-        Vec2d disFoodLoc;
-        Button disFood{"food: " + to_string(food), statSize, disFoodLoc};
-        disFoodLoc = {((g.width()-(disFood.width/2))/5)*2,g.height() - topMar};
-        disFood.draw(g);
-        Vec2d disWaterLoc;
-        Button disWater{"water: " + to_string(water), statSize, disWaterLoc};
-        disWaterLoc = {((g.width()-(disWater.width/2))/5)*3,g.height() - topMar};
-        disWater.draw(g);
-        Vec2d enviLoc;
-        Button envi{"environment: " + to_string(environment), statSize, enviLoc};
-        enviLoc = {((g.width()-(envi.width/2))/5)*4,g.height() - topMar};
-        envi.draw(g);
-
         //animate card
         if(animationCount > 0)
         {
@@ -123,6 +99,7 @@ void graphicsMain(Graphics& g)
             animation.draw(g, false);
             if (animationCount == 0)
             {
+                world.handleCard(animation.type);
                 if(cards.size() <= 3)
                 {
                     cards.clear();
@@ -141,33 +118,6 @@ void graphicsMain(Graphics& g)
                 int index;
                 if(isCardClicked(cards, {e.x, e.y}, index) && animationCount == 0)
                 {
-                    switch(cards[index].type)
-                    {
-                    case CardType::Tree:
-                        break;
-                    case CardType::Person:
-                        break;
-                    case CardType::Lightning:
-                        break;
-                    case CardType::Wind:
-                        break;
-                    case CardType::Animal:
-                        break;
-                    case CardType::Drought:
-                        break;
-                    case CardType::Garden:
-                        break;
-                    case CardType::Plague:
-                        break;
-                    case CardType::Reproduction:
-                        break;
-                    case CardType::Rain:
-                        break;
-                    case CardType::Harvest:
-                        break;
-                    case CardType::Sacrifice:
-                        break;
-                    }
                     animation = cards[index];
                     cards.erase(cards.begin()+index);
                     animationCount = 90;
