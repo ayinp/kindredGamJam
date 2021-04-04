@@ -12,6 +12,33 @@
 
 using namespace std;
 using namespace mssm;
+// isCardClicked
+bool isCardClicked(vector<Card> cards, Vec2d location, int& index)
+{
+    for(int i = 0; i < cards.size(); i++)
+    {
+        if (cards[i].inCard(location))
+        {
+            index = i;
+            return true;
+        }
+    }
+    return false;
+}
+
+// card randomisation
+vector<Card> dealCards(Graphics& g,int numCards, int groundY, int spacing, int cardSpace)
+{
+    vector<Card> cards;
+    for(int i = 0; i < numCards - 1; i++)
+    {
+        CardType CT = static_cast<CardType>(rand()%(static_cast<int>(CardType::Wind)+1));
+        cards.push_back(Card{{spacing + cardSpace*i, groundY - 200}, CT});
+    }
+    return cards;
+}
+
+
 
 // game
 void graphicsMain(Graphics& g)
@@ -25,16 +52,15 @@ void graphicsMain(Graphics& g)
     vector<Man> men;
 
     // card things
-    vector<Card> cards;
-    Card example({0,0}, CardType::Tree);
     int numCards = 6;
-    int cardSpace = example.width + 20;
-    int cardMargin = (g.width()-(cardSpace*numCards))/2;
-    for(int i = 0; i < numCards - 1; i++)
-    {
-        CardType CT = static_cast<CardType>(rand()%(static_cast<int>(CardType::Wind)+1));
-        cards.push_back(Card({((g.width()/numCards)*i)+cardMargin/2, groundPos.y - 200}, CT));
-    }
+    Card example({0,0}, CardType::Tree);
+    int spacing = (g.width()-example.width*numCards)/(numCards + 1);
+    int cardSpace = example.width + spacing;
+    vector<Card> cards = dealCards(g, numCards, groundPos.y, spacing, cardSpace);
+    Image cardBack("back.png");
+
+    Card animation{{0,0}, CardType::Tree};
+    int animationCount = 0;
 
 
     // stats
@@ -43,17 +69,18 @@ void graphicsMain(Graphics& g)
     int food = 50;
     int water = 50;
 
-    //position of mouse
-    Vec2d mousePos = g.mousePos();
-
     // g.draw
     while (g.draw())
     {
         g.clear();
+
+        //position of mouse
+        Vec2d mousePos = g.mousePos();
+
         // environment
         Vec2d groundWH{g.width(), 50};
         g.rect(groundPos, groundWH.x, groundWH.y, GREEN, GREEN);
-        g.rect({(((g.width()/6)*5)+40),groundPos.y - 200}, 100, 150, BLUE, BLUE);
+        g.image({spacing + cardSpace*(numCards-1), groundPos.y - 200}, example.width + 10, example.height + 10, cardBack);
 
         // men
         for(int i = 0; i < men.size(); i++)
@@ -65,35 +92,87 @@ void graphicsMain(Graphics& g)
         //cards
         for(Card& c: cards)
         {
-            c.draw(g, mousePos);
-//            if(c.inCard(mousePos))
-//            {
-//                c.rim = WHITE;
-//            }
+            c.draw(g, true);
         }
 
         //display stats
         int statSize = 30;
         int topMar = 30;
-        Button pop{"population: " + to_string(population), statSize};
-        pop.location = {(g.width()-(pop.width/2))/5,g.height() - topMar};
+        Vec2d popLocation;
+        Button pop{"population: " + to_string(population), statSize, popLocation};
+        popLocation= {(g.width()-(pop.width/2))/5,g.height() - topMar};
         pop.draw(g);
-        Button disFood{"food: " + to_string(food), statSize};
-        disFood.location = {((g.width()-(disFood.width/2))/5)*2,g.height() - topMar};
+        Vec2d disFoodLoc;
+        Button disFood{"food: " + to_string(food), statSize, disFoodLoc};
+        disFoodLoc = {((g.width()-(disFood.width/2))/5)*2,g.height() - topMar};
         disFood.draw(g);
-        Button disWater{"water: " + to_string(water), statSize};
-        disWater.location = {((g.width()-(disWater.width/2))/5)*3,g.height() - topMar};
+        Vec2d disWaterLoc;
+        Button disWater{"water: " + to_string(water), statSize, disWaterLoc};
+        disWaterLoc = {((g.width()-(disWater.width/2))/5)*3,g.height() - topMar};
         disWater.draw(g);
-        Button envi{"environment: " + to_string(environment), statSize};
-        envi.location = {((g.width()-(envi.width/2))/5)*4,g.height() - topMar};
+        Vec2d enviLoc;
+        Button envi{"environment: " + to_string(environment), statSize, enviLoc};
+        enviLoc = {((g.width()-(envi.width/2))/5)*4,g.height() - topMar};
         envi.draw(g);
 
+        //animate card
+        if(animationCount > 0)
+        {
+            animation.location = animation.location + Vec2d{0, 7};
+            animationCount--;
+            animation.draw(g, false);
+            if (animationCount == 0)
+            {
+                if(cards.size() <= 3)
+                {
+                    cards.clear();
+                    cards = dealCards(g, numCards, groundPos.y, spacing, cardSpace);
+                }
+            }
+        }
+
+        //click things
         for (const Event& e : g.events())
         {
             switch (e.evtType)
             {
             case EvtType::MousePress:
-                men.push_back(Man{g, WHITE, manVelocity, groundPos, groundWH});
+            {
+                int index;
+                if(isCardClicked(cards, {e.x, e.y}, index) && animationCount == 0)
+                {
+                    switch(cards[index].type)
+                    {
+                    case CardType::Tree:
+                        break;
+                    case CardType::Person:
+                        break;
+                    case CardType::Lightning:
+                        break;
+                    case CardType::Wind:
+                        break;
+                    case CardType::Animal:
+                        break;
+                    case CardType::Drought:
+                        break;
+                    case CardType::Garden:
+                        break;
+                    case CardType::Plague:
+                        break;
+                    case CardType::Reproduction:
+                        break;
+                    case CardType::Rain:
+                        break;
+                    case CardType::Harvest:
+                        break;
+                    case CardType::Sacrifice:
+                        break;
+                    }
+                    animation = cards[index];
+                    cards.erase(cards.begin()+index);
+                    animationCount = 90;
+                }
+            }
                 break;
             case EvtType::MouseRelease:
                 break;

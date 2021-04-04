@@ -16,7 +16,7 @@ public:
     mssm::Color outerColor = mssm::BLACK;
 
 public:
-    Button(std::string text, int textSize);
+    Button(std::string text, int textSize, Vec2d location = {0,0});
     Button();
     bool inButton(Vec2d position);
     void draw(mssm::Graphics& g);

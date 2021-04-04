@@ -10,8 +10,9 @@ Button::Button()
 
 }
 
-Button::Button(string label, int size)
+Button::Button(string label, int size, Vec2d location)
 {
+    this->location = location;
     text = label;
     textSize = size;
     location = {0, 0};
@@ -33,7 +34,7 @@ void Button::draw(Graphics& g)
     TextMetrics textMetrics;
     Vec2d rectPos;
     textMetrics.rect(location, text, textSize, rectPos, width, height);
-    g.rect(rectPos, width, height, outerColor, color);
+    g.rect(rectPos-Vec2d{textSize/4, 0}, width + textSize/2, height, outerColor, color);
     g.text(location, textSize, text, textColor);
     location = rectPos;
 }

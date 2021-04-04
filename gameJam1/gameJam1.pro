@@ -12,6 +12,7 @@ HEADERS    = \
     graphics.h \
     vec2d.h \
     plugin.h \
+    world.h
 
 SOURCES     = \
     button.cpp \
@@ -21,6 +22,7 @@ SOURCES     = \
     man.cpp \
     vec2d.cpp \
     plugin.cpp \
+    world.cpp
 
 DISTFILES += \
     notes.txt

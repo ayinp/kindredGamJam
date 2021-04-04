@@ -8,7 +8,7 @@ enum class CardType
     Animal,
     Garden,
     Reproduction,
-    Sacrafice,
+    Sacrifice,
     // event type
     Lightning, // keep this as first event type :)
     Tree,
@@ -27,15 +27,14 @@ public:
     CardType type;
     int width = 100;
     int height = 150;
-    mssm::Color rim = mssm::BLACK;
+    mssm::Image image;
 public:
     Card(Vec2d location, CardType type);
-    void draw(mssm::Graphics& g, Vec2d position);
+    void draw(mssm::Graphics& g, bool hover);
     bool isEvent();
     mssm::Color innerColor();
     mssm::Color outerColor();
     bool inCard(Vec2d position);
-//    void changeRim(Vec2d position);
 };
 
 #endif // CARD_H
