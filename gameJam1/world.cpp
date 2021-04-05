@@ -50,6 +50,19 @@ void World::draw(mssm::Graphics &g)
     {
         flowers[j].drawAndUpdate(g);
     }
+    for(int j = 0; j < animations.size(); j++)
+    {
+        animations[j]->draw(g);
+        if(animations[j]->finished())
+        {
+            delete animations[j];
+            animations.erase(animations.begin()+j);
+            j--;
+        }
+    }
+
+
+
 
 }
 
@@ -114,7 +127,7 @@ void World::doGarden(Graphics& g, int round)
     environment += 5;
     water -= 5;
     // ^^increases every 5 rounds
-    flowers.push_back(Sprite(g, Type::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    flowers.push_back(Sprite(g, SpriteType::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
     // adds flowers every time triggered :)
 }
 
@@ -144,24 +157,25 @@ void World::doLightning(Graphics& g)
         animals.erase(animals.begin());
     }
     // shows animation of animal being electrocuted before deleting him
+    animations.push_back(new LightningAnim{});
 }
 
 void World::doTree(Graphics& g)
 {
     environment += 10;
-    trees.push_back(Sprite(g, Type::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
 }
 
 void World::doPerson(Graphics& g)
 {
     population += 10;
-    men.push_back(Sprite(g, Type::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
 }
 
 void World::doFeast(Graphics& g)
 {
     food += 10;
-    animals.push_back(Sprite(g, Type::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
     //message: "The Gods have Sent you Food" for a few seconds
 }
 

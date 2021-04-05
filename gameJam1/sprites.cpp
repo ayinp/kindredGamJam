@@ -5,7 +5,7 @@
 #pragma GCC diagnostic ignored "-Wnarrowing"
 using namespace mssm;
 
-Sprite::Sprite(Graphics& g, Type type, Color color, Vec2d platformPos, Vec2d platformWH, Vec2d location, Vec2d velocity)
+Sprite::Sprite(Graphics& g, SpriteType type, Color color, Vec2d platformPos, Vec2d platformWH, Vec2d location, Vec2d velocity)
 {
     this->type = type;
     this->color = color;
@@ -19,19 +19,19 @@ void Sprite::drawAndUpdate(Graphics &g)
 {
     switch(type)
     {
-    case Type::Man:
+    case SpriteType::Man:
         drawMan(g);
         updateMan(g);
         break;
-    case Type::Animal:
+    case SpriteType::Animal:
         drawAnimals(g);
         updateAnimals(g);
         break;
-    case Type::Tree:
+    case SpriteType::Tree:
         drawTrees(g);
         updateTrees(g);
         break;
-    case Type::Flower:
+    case SpriteType::Flower:
         drawFlowers(g);
         updateFlowers(g);
         break;

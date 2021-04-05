@@ -3,6 +3,7 @@
 #include "graphics.h"
 #include "card.h"
 #include "sprites.h"
+#include "animation.h"
 
 class World
 {
@@ -21,6 +22,7 @@ public:
     std::vector<Sprite> animals;
     std::vector<Sprite> flowers;
     std::vector<Sprite> trees;
+    std::vector<Animation*> animations;
 public:
     World();
     void draw(mssm::Graphics& g);

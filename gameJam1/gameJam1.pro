@@ -5,6 +5,7 @@ CONFIG += gui
 CONFIG += c++14
 
 HEADERS    = \
+    animation.h \
     button.h \
     card.h \
     sprites.h \
@@ -15,6 +16,7 @@ HEADERS    = \
     world.h
 
 SOURCES     = \
+    animation.cpp \
     button.cpp \
     card.cpp \
     main.cpp \
