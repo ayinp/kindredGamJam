@@ -29,9 +29,11 @@ void Sprite::drawAndUpdate(Graphics &g)
         break;
     case Type::Tree:
         drawTrees(g);
+        updateTrees(g);
         break;
     case Type::Flower:
         drawFlowers(g);
+        updateFlowers(g);
         break;
     }
 }
