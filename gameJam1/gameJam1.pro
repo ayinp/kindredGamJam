@@ -7,7 +7,7 @@ CONFIG += c++14
 HEADERS    = \
     button.h \
     card.h \
-    man.h \
+    sprites.h \
     window.h \
     graphics.h \
     vec2d.h \
@@ -19,7 +19,7 @@ SOURCES     = \
     card.cpp \
     main.cpp \
     graphics.cpp \
-    man.cpp \
+    sprites.cpp \
     vec2d.cpp \
     plugin.cpp \
     world.cpp

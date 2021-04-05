@@ -13,7 +13,7 @@ enum class CardType
     Lightning, // keep this as first event type :)
     Tree,
     Person,
-    Harvest,
+    Feast,
     Rain,
     Plague,
     Drought,

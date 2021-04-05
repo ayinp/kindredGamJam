@@ -3,7 +3,7 @@
 #include "graphics.h"
 #include <cmath>
 #include <vector>
-#include "man.h"
+#include "sprites.h"
 #include "button.h"
 #include "card.h"
 #include "world.h"
@@ -48,11 +48,13 @@ void graphicsMain(Graphics& g)
     // world
     World world;
     Vec2d groundPos{0, (g.height()/16)*8};
+    Vec2d groundWH{g.width(), 50};
     world.groundPos = groundPos;
+    world.groundWH = groundWH;
 
-    // men things
+    // sprite things
     Vec2d manVelocity {0, -10};
-    vector<Man> men;
+    vector<Sprite> men;
 
     // card things
     int numCards = 6;
@@ -65,6 +67,8 @@ void graphicsMain(Graphics& g)
     Card animation{{0,0}, CardType::Tree};
     int animationCount = 0;
 
+    // rounds
+    int round = 1;
 
     // g.draw
     while (g.draw())
@@ -78,13 +82,6 @@ void graphicsMain(Graphics& g)
         world.draw(g);
         g.image({spacing + cardSpace*(numCards-1), groundPos.y - 200}, example.width + 10, example.height + 10, cardBack);
 
-        // men
-        for(int i = 0; i < men.size(); i++)
-        {
-            men[i].draw(g);
-            men[i].update(g);
-        }
-
         //cards
         for(Card& c: cards)
         {
@@ -94,19 +91,23 @@ void graphicsMain(Graphics& g)
         //animate card
         if(animationCount > 0)
         {
-            animation.location = animation.location + Vec2d{0, 7};
+            animation.location = animation.location + Vec2d{0, 15};
             animationCount--;
             animation.draw(g, false);
             if (animationCount == 0)
             {
-                world.handleCard(animation.type);
+                world.handleCard(g, animation.type, round);
                 if(cards.size() <= 3)
                 {
                     cards.clear();
                     cards = dealCards(g, numCards, groundPos.y, spacing, cardSpace);
+                    round++;
                 }
             }
         }
+
+        // display round
+        g.text(20, 20, 50, to_string(round), WHITE);
 
         //click things
         for (const Event& e : g.events())
@@ -115,12 +116,13 @@ void graphicsMain(Graphics& g)
             {
             case EvtType::MousePress:
             {
+                // men.push_back(Man{g, WHITE, manVelocity, groundPos, {g.width(), 50}});
                 int index;
                 if(isCardClicked(cards, {e.x, e.y}, index) && animationCount == 0)
                 {
                     animation = cards[index];
                     cards.erase(cards.begin()+index);
-                    animationCount = 90;
+                    animationCount = 50;
                 }
             }
                 break;
@@ -148,7 +150,7 @@ void graphicsMain(Graphics& g)
 int main(int /*argc*/, char** /*argv*/)
 {
     // main should be empty except for the following line:
-    Graphics g("Graphics", 1200, 800, graphicsMain);
+    Graphics g("Graphics", 1600, 900, graphicsMain);
     return 0;
 }
 

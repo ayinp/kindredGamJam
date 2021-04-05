@@ -21,7 +21,7 @@ Card::Card(Vec2d location, CardType type)
     case CardType::Plague:       image.load("plague.png");       break;
     case CardType::Reproduction: image.load("reproduction.png"); break;
     case CardType::Rain:         image.load("rain.png");         break;
-    case CardType::Harvest:      image.load("harvest.png");      break;
+    case CardType::Feast:      image.load("harvest.png");      break;
     case CardType::Sacrifice:    image.load("sacrifice.png");    break;
 
     }
@@ -88,8 +88,8 @@ void Card::draw(Graphics& g, bool hover)
             effect = "+10 water";
             typeOfCard = "type: EVENT, this event will happen once per placement";
             break;
-        case CardType::Harvest:
-            message = "HARVEST: This card will cause an exeptionally large harvest";
+        case CardType::Feast:
+            message = "FEAST: This card will send a feast from the gods!";
             effect = "+10 food";
             typeOfCard = "type: EVENT, this event will happen once per placement";
             break;
@@ -140,7 +140,7 @@ Color Card::innerColor()
     case CardType::Plague:       return {0,0,26};      // onyx
     case CardType::Reproduction: return {153,51,255};  // purple
     case CardType::Rain:         return {0,255,255};   // auqua
-    case CardType::Harvest:      return {255,128,170}; // pink
+    case CardType::Feast:      return {255,128,170}; // pink
     case CardType::Sacrifice:    return {255,255,255}; //white
 
     }
