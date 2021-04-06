@@ -33,6 +33,13 @@ void World::draw(mssm::Graphics &g)
     envi.location = {((g.width()-(envi.width/2))/5)*4,g.height() - topMar};
     envi.draw(g);
 
+    // water tower
+    g.rect({g.width() - 100, groundPos.y + groundWH.y}, 75, 100, GREY, GREY);
+    for (int i = 0; i <= water; i += 10)
+    {
+        g.rect({g.width() - 75, groundPos.y + groundWH.y}, 25, i, BLUE, BLUE);
+    }
+
     // sprites
     for(int j = 0; j < trees.size(); j++)
     {
@@ -53,6 +60,7 @@ void World::draw(mssm::Graphics &g)
     for(int j = 0; j < animations.size(); j++)
     {
         animations[j]->draw(g);
+        animations[j]->update(g);
         if(animations[j]->finished())
         {
             delete animations[j];
@@ -151,13 +159,21 @@ void World::doSacrifice(Graphics& g, int round)
 
 void World::doLightning(Graphics& g)
 {
+    bool facingLeft;
     food -= 10;
     if(animals.size() > 0)
     {
+        if(animals[0].velocity.x > 0)
+        {
+            facingLeft = false;
+        }
+        else
+        {
+            facingLeft = true;
+        }
+        animations.push_back(new LightningAnim{animals[0].location, facingLeft});
         animals.erase(animals.begin());
     }
-    // shows animation of animal being electrocuted before deleting him
-    animations.push_back(new LightningAnim{});
 }
 
 void World::doTree(Graphics& g)
@@ -182,6 +198,7 @@ void World::doFeast(Graphics& g)
 void World::doRain(Graphics& g)
 {
     water += 10;
+    animations.push_back(new RainAnim(g));
     // rain animation on screen (random falling scattered particles, only on top part, not down to cards),
     // water tower levels rise (switch out water tower immage to another depending on value of water?)
 }
@@ -191,6 +208,7 @@ void World::doPlague(Graphics& g)
     population -= 10;
     if(men.size() > 0)
     {
+        animations.push_back(new ManDeathAnim(men[0].location));
         men.erase(men.begin());
     }
     // man dead animation (falls onto side then disapears?)
@@ -208,9 +226,8 @@ void World::doWind(Graphics& g)
     environment -= 10;
     if(trees.size() > 0)
     {
+        animations.push_back(new WindAnim(trees[0].location));
         trees.erase(trees.begin());
     }
-    // tornado goes around screen animation
-    // tree falls over animation (when tornado passes it)
 }
 

@@ -525,6 +525,8 @@ Graphics::Graphics(std::string title, int width, int height,
 
     QApplication app(argc, nullptr);
 
+    QDir::setCurrent(app.applicationDirPath());
+
     QSurfaceFormat fmt;
     fmt.setSamples(4);
     QSurfaceFormat::setDefaultFormat(fmt);
