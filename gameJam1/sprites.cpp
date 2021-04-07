@@ -5,6 +5,11 @@
 #pragma GCC diagnostic ignored "-Wnarrowing"
 using namespace mssm;
 
+Sprite::Sprite()
+{
+
+}
+
 Sprite::Sprite(Graphics& g, SpriteType type, Color color, Vec2d platformPos, Vec2d platformWH, Vec2d location, Vec2d velocity)
 {
     this->type = type;
@@ -46,10 +51,17 @@ void Sprite::drawMan(Graphics& g)
 void Sprite::updateMan(Graphics& g)
 {
     location = location + velocity;
-
+    int x = rand()%2;
     if(location.y < platformPos.y + platformWH.y)
     {
-        velocity = {rand()%10, 0};
+        if(x == 1)
+        {
+        velocity = {rand()%8+2, 0};
+        }
+        else if(x == 0)
+        {
+            velocity = {rand()%8-10, 0};
+        }
         location.y = platformPos.y + platformWH.y;
     }
     if(location.x <= 0)
@@ -73,10 +85,17 @@ void Sprite::drawAnimals(Graphics &g)
 void Sprite::updateAnimals(Graphics &g)
 {
     location = location + velocity;
-
+    int x = rand()%2;
     if(location.y < platformPos.y + platformWH.y)
     {
-        velocity = {rand()%2 - 4 || rand()%2 + 2, 0};
+        if(x == 0)
+        {
+        velocity = {rand()%2-5, 0};
+        }
+        else if(x == 1)
+        {
+            velocity = {rand()%2+3, 0};
+        }
         location.y = platformPos.y + platformWH.y;
     }
     if(location.x <= 0)

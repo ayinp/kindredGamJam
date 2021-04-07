@@ -1,5 +1,6 @@
 #ifndef ANIMATIONS_H
 #define ANIMATIONS_H
+#include "sprites.h"
 #include "graphics.h"
 
 class Animation
@@ -11,8 +12,25 @@ public:
     Animation();
     virtual ~Animation();
     virtual void draw(mssm::Graphics& g);
-    virtual void update(mssm::Graphics& g);
+    virtual void update(mssm::Graphics& g );
     bool finished(){ return animFrame >= animLength; }
+};
+
+class Start : public Animation
+{
+public:
+    std::vector<Sprite> men;
+    std::vector<Sprite> animals;
+    std::vector<Sprite> trees;
+    int numMen;
+    int numAnimals;
+    int numTrees;
+    Vec2d groundPos;
+    Vec2d groundWH;
+
+public:
+    Start(std::vector<Sprite>& men, std::vector<Sprite>& animals, std::vector<Sprite>& trees, int numMen, int numAnimals, int numTrees, Vec2d groundPos, Vec2d groundWH);
+    virtual void draw(mssm::Graphics &g) override;
 };
 
 
@@ -54,10 +72,39 @@ class RainAnim : public Animation
 public:
     std::vector<Vec2d> positions;
     std::vector<Vec2d> velocity;
+    Vec2d groundPos;
+    Vec2d groundWH;
 public:
-    RainAnim(mssm::Graphics& g);
+    RainAnim(mssm::Graphics& g, Vec2d groundPos, Vec2d groundWH);
     virtual void draw(mssm::Graphics& g) override;
     virtual void update(mssm::Graphics& g) override;
+};
+
+class DroughtAnim : public Animation
+{
+public:
+    Vec2d groundPos;
+    Vec2d groundWH;
+public:
+    DroughtAnim(Vec2d groundPos, Vec2d groundWH);
+    virtual void draw(mssm::Graphics& g) override;
+};
+
+class FeastAnim : public Animation
+{
+public:
+
+public:
+    virtual void draw(mssm::Graphics& g) override;
+};
+
+class killAnimalAnim : public Animation
+{
+public:
+    Vec2d animalPos;
+public:
+    killAnimalAnim(Vec2d animalPos);
+    virtual void draw(mssm::Graphics& g) override;
 };
 
 

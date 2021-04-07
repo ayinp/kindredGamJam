@@ -14,6 +14,22 @@ World::World()
 
 void World::draw(mssm::Graphics &g)
 {
+    x++;
+    if(x < 2)
+    {
+        for(int i = 0; i < numMen; i++)
+        {
+            men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+        }
+        for(int i = 0; i < numAnimals; i++)
+        {
+            animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+        }
+        for(int i = 0; i < numTrees; i++)
+        {
+            trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+        }
+    }
     // ground
     g.rect(groundPos, groundWH.x, groundWH.y, GREEN, GREEN);
 
@@ -35,7 +51,7 @@ void World::draw(mssm::Graphics &g)
 
     // water tower
     g.rect({g.width() - 100, groundPos.y + groundWH.y}, 75, 100, GREY, GREY);
-    for (int i = 0; i <= water; i += 10)
+    for (int i = 0; i <= water; i += 5)
     {
         g.rect({g.width() - 75, groundPos.y + groundWH.y}, 25, i, BLUE, BLUE);
     }
@@ -117,6 +133,11 @@ void World::handleCard(Graphics& g, CardType type, int round)
     }
 }
 
+void World::startScreen(Graphics &g)
+{
+    animations.push_back(new Start(men, animals, trees, numMen, numAnimals, numTrees, groundPos, groundWH));
+}
+
 // NOTE: remember:
 // all of the things on screen should be directly proportional to the stats . . .
 
@@ -125,36 +146,50 @@ void World::doAnimal(Graphics& g, int round)
 {
     food += 5;
     environment -= 5;
-    // ^^increases every 5 rounds,
-    // makes animal every +10 food,
-    // takes away tree every -10 environment
+    animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    // ^^do every 5 rounds,
+    if(flowers.size() > 0)
+    {
+        flowers.erase(flowers.begin());
+    }
+    else if(flowers.size() <= 0 && trees.size() > 0)
+    {
+        trees.erase(trees.begin());
+    }
 }
 
 void World::doGarden(Graphics& g, int round)
 {
     environment += 5;
     water -= 5;
-    // ^^increases every 5 rounds
-    flowers.push_back(Sprite(g, SpriteType::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
-    // adds flowers every time triggered :)
+    flowers.push_back(Sprite(g, SpriteType::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+    // ^^do every 5 rounds
 }
 
 void World::doReproduction(Graphics& g, int round)
 {
     population += 5;
     food -= 5;
-    // ^^increases every 5 rounds,
-    // make rain whenever activated,
-    // drop man every +10 population
+    men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    if(animals.size() > 0)
+    {
+        animations.push_back(new killAnimalAnim{animals[0].location});
+        animals.erase(animals.begin());
+    }
+    // ^^do every 5 rounds,
 }
 
 void World::doSacrifice(Graphics& g, int round)
 {
     water += 5;
     population -= 5;
-    // ^^increase every 5 rounds,
-    // rains every time activated,
-    // kills little man every -10 population
+    animations.push_back(new RainAnim(g, groundPos, groundWH));
+    if(men.size() > 0)
+    {
+        animations.push_back(new ManDeathAnim(men[0].location));
+        men.erase(men.begin());
+    }
+    // ^^do every 5 rounds,
 }
 
 void World::doLightning(Graphics& g)
@@ -173,18 +208,31 @@ void World::doLightning(Graphics& g)
         }
         animations.push_back(new LightningAnim{animals[0].location, facingLeft});
         animals.erase(animals.begin());
+
+        if(animals[0].velocity.x > 0)
+        {
+            facingLeft = false;
+        }
+        else
+        {
+            facingLeft = true;
+        }
+        animations.push_back(new LightningAnim{animals[0].location, facingLeft});
+        animals.erase(animals.begin());
     }
 }
 
 void World::doTree(Graphics& g)
 {
     environment += 10;
-    trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+    trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
 }
 
 void World::doPerson(Graphics& g)
 {
     population += 10;
+    men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
     men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
 }
 
@@ -192,15 +240,15 @@ void World::doFeast(Graphics& g)
 {
     food += 10;
     animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
-    //message: "The Gods have Sent you Food" for a few seconds
+    animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    animations.push_back(new FeastAnim());
 }
 
 void World::doRain(Graphics& g)
 {
     water += 10;
-    animations.push_back(new RainAnim(g));
-    // rain animation on screen (random falling scattered particles, only on top part, not down to cards),
-    // water tower levels rise (switch out water tower immage to another depending on value of water?)
+    animations.push_back(new RainAnim(g, groundPos, groundWH));
+
 }
 
 void World::doPlague(Graphics& g)
@@ -210,15 +258,15 @@ void World::doPlague(Graphics& g)
     {
         animations.push_back(new ManDeathAnim(men[0].location));
         men.erase(men.begin());
+        animations.push_back(new ManDeathAnim(men[0].location));
+        men.erase(men.begin());
     }
-    // man dead animation (falls onto side then disapears?)
 }
 
 void World::doDrought(Graphics& g)
 {
     water -= 10;
-    // makes ground go a different color for a few seconds
-    // water level in water tower goes down
+    animations.push_back(new DroughtAnim(groundPos, groundWH));
 }
 
 void World::doWind(Graphics& g)
@@ -226,6 +274,8 @@ void World::doWind(Graphics& g)
     environment -= 10;
     if(trees.size() > 0)
     {
+        animations.push_back(new WindAnim(trees[0].location));
+        trees.erase(trees.begin());
         animations.push_back(new WindAnim(trees[0].location));
         trees.erase(trees.begin());
     }

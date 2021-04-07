@@ -30,6 +30,7 @@ public:
     int flowerWidth = 10;
     int flowerHeight = 20;
 public:
+    Sprite();
     Sprite(mssm::Graphics& g, SpriteType type, mssm::Color color, Vec2d platformPos, Vec2d platformWH, Vec2d location, Vec2d velocity = {0, -10});
     void drawAndUpdate(mssm::Graphics& g);
     void drawMan(mssm::Graphics& g);
