@@ -79,7 +79,7 @@ void graphicsMain(Graphics& g)
         Vec2d mousePos = g.mousePos();
 
         // environment
-        world.draw(g);
+        world.draw(g, round);
         g.image({spacing + cardSpace*(numCards-1), groundPos.y - 200}, example.width + 10, example.height + 10, cardBack);
 
         //cards
@@ -102,6 +102,7 @@ void graphicsMain(Graphics& g)
                     cards.clear();
                     cards = dealCards(g, numCards, groundPos.y, spacing, cardSpace);
                     round++;
+                    world.newRound(g, round);
                 }
             }
         }

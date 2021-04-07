@@ -25,8 +25,8 @@ public:
     int manHeight = 50;
     int animalWidth = 50;
     int animalHeight = 30;
-    int treeWidth = 40;
-    int treeHeight = 60;
+    int treeWidth = 80;
+    int treeHeight = 120;
     int flowerWidth = 10;
     int flowerHeight = 20;
 public:

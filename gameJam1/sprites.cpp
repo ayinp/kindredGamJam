@@ -113,7 +113,8 @@ void Sprite::updateAnimals(Graphics &g)
 
 void Sprite::drawTrees(Graphics &g)
 {
-    g.rect(location, treeWidth, treeHeight, color, color);
+    static Image tree("treeSprite.png");
+    g.image(location, treeWidth, treeHeight, tree);
 }
 
 void Sprite::updateTrees(Graphics &g)

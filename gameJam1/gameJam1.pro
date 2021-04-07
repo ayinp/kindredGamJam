@@ -8,6 +8,7 @@ HEADERS    = \
     animation.h \
     button.h \
     card.h \
+    continuous.h \
     sprites.h \
     window.h \
     graphics.h \
@@ -19,6 +20,7 @@ SOURCES     = \
     animation.cpp \
     button.cpp \
     card.cpp \
+    continuous.cpp \
     main.cpp \
     graphics.cpp \
     sprites.cpp \

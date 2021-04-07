@@ -2,6 +2,7 @@
 #include "world.h"
 #include "button.h"
 #include "sprites.h"
+#include "continuous.h"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wnarrowing"
@@ -12,26 +13,31 @@ World::World()
 {
 }
 
-void World::draw(mssm::Graphics &g)
+void World::draw(mssm::Graphics &g, int round)
 {
-    x++;
-    if(x < 2)
-    {
-        for(int i = 0; i < numMen; i++)
-        {
-            men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
-        }
-        for(int i = 0; i < numAnimals; i++)
-        {
-            animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
-        }
-        for(int i = 0; i < numTrees; i++)
-        {
-            trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
-        }
-    }
-    // ground
+    // background
     g.rect(groundPos, groundWH.x, groundWH.y, GREEN, GREEN);
+    static Image sky("background.png");
+    double skyRatio = 1.0*sky.width()/sky.height();
+    g.image({0,groundPos.y + groundWH.y}, skyRatio*(g.height()-groundPos.y - groundWH.y), g.height()-groundPos.y - groundWH.y, sky);
+
+    // initial sprites
+    //    x++;
+    //    if(x < 2)
+    //    {
+    //        for(int i = 0; i < numMen; i++)
+    //        {
+    //            men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    //        }
+    //        for(int i = 0; i < numAnimals; i++)
+    //        {
+    //            animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    //        }
+    //        for(int i = 0; i < numTrees; i++)
+    //        {
+    //            trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+    //        }
+    //    }
 
     // stats
     int statSize = 30;
@@ -85,9 +91,6 @@ void World::draw(mssm::Graphics &g)
         }
     }
 
-
-
-
 }
 
 void World::handleCard(Graphics& g, CardType type, int round)
@@ -95,40 +98,40 @@ void World::handleCard(Graphics& g, CardType type, int round)
     switch(type)
     {
     case CardType::Tree:
-        doTree(g);
+        doTree(g, 2);
         break;
     case CardType::Person:
-        doPerson(g);
+        doPerson(g, 2);
         break;
     case CardType::Lightning:
-        doLightning(g);
+        doLightning(g, 2);
         break;
     case CardType::Wind:
-        doWind(g);
+        doWind(g, 2);
         break;
     case CardType::Animal:
-        doAnimal(g, round);
+        doAnimal(g);
         break;
     case CardType::Drought:
-        doDrought(g);
+        doDrought(g, 2);
         break;
     case CardType::Garden:
-        doGarden(g, round);
+        doGarden(g);
         break;
     case CardType::Plague:
-        doPlague(g);
+        doPlague(g, 2);
         break;
     case CardType::Reproduction:
-        doReproduction(g, round);
+        doReproduction(g);
         break;
     case CardType::Rain:
-        doRain(g);
+        doRain(g, 2);
         break;
     case CardType::Feast:
-        doFeast(g);
+        doFeast(g, 2);
         break;
     case CardType::Sacrifice:
-        doSacrifice(g, round);
+        doSacrifice(g);
         break;
     }
 }
@@ -138,16 +141,11 @@ void World::startScreen(Graphics &g)
     animations.push_back(new Start(men, animals, trees, numMen, numAnimals, numTrees, groundPos, groundWH));
 }
 
-// NOTE: remember:
-// all of the things on screen should be directly proportional to the stats . . .
-
-
-void World::doAnimal(Graphics& g, int round)
+void World::doAnimal(Graphics& g)
 {
     food += 5;
     environment -= 5;
     animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
-    // ^^do every 5 rounds,
     if(flowers.size() > 0)
     {
         flowers.erase(flowers.begin());
@@ -156,17 +154,19 @@ void World::doAnimal(Graphics& g, int round)
     {
         trees.erase(trees.begin());
     }
+    continuous.push_back(new continAnimal(*this));
+
 }
 
-void World::doGarden(Graphics& g, int round)
+void World::doGarden(Graphics& g)
 {
     environment += 5;
     water -= 5;
     flowers.push_back(Sprite(g, SpriteType::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
-    // ^^do every 5 rounds
+    continuous.push_back(new continGarden(*this));
 }
 
-void World::doReproduction(Graphics& g, int round)
+void World::doReproduction(Graphics& g)
 {
     population += 5;
     food -= 5;
@@ -176,10 +176,10 @@ void World::doReproduction(Graphics& g, int round)
         animations.push_back(new killAnimalAnim{animals[0].location});
         animals.erase(animals.begin());
     }
-    // ^^do every 5 rounds,
+    continuous.push_back(new continReproduction(*this));
 }
 
-void World::doSacrifice(Graphics& g, int round)
+void World::doSacrifice(Graphics& g)
 {
     water += 5;
     population -= 5;
@@ -189,95 +189,182 @@ void World::doSacrifice(Graphics& g, int round)
         animations.push_back(new ManDeathAnim(men[0].location));
         men.erase(men.begin());
     }
-    // ^^do every 5 rounds,
+    continuous.push_back(new continSacrifice(*this));
 }
 
-void World::doLightning(Graphics& g)
+void World::doLightning(Graphics& g, int num)
 {
     bool facingLeft;
     food -= 10;
-    if(animals.size() > 0)
+    for(int i = 0; i < num; i++)
     {
-        if(animals[0].velocity.x > 0)
+        if(animals.size() > 0)
         {
-            facingLeft = false;
+            if(animals[0].velocity.x > 0)
+            {
+                facingLeft = false;
+            }
+            else
+            {
+                facingLeft = true;
+            }
+            animations.push_back(new LightningAnim{animals[0].location, facingLeft});
+            animals.erase(animals.begin());
         }
-        else
-        {
-            facingLeft = true;
-        }
-        animations.push_back(new LightningAnim{animals[0].location, facingLeft});
-        animals.erase(animals.begin());
-
-        if(animals[0].velocity.x > 0)
-        {
-            facingLeft = false;
-        }
-        else
-        {
-            facingLeft = true;
-        }
-        animations.push_back(new LightningAnim{animals[0].location, facingLeft});
-        animals.erase(animals.begin());
     }
 }
 
-void World::doTree(Graphics& g)
+void World::doTree(Graphics& g, int num)
 {
     environment += 10;
-    trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
-    trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+    for(int i = 0; i < num; i++)
+    {
+        trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+    }
 }
 
-void World::doPerson(Graphics& g)
+void World::doPerson(Graphics& g, int num)
 {
     population += 10;
-    men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
-    men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    for(int i = 0; i < num; i++)
+    {
+        men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    }
 }
 
-void World::doFeast(Graphics& g)
+void World::doFeast(Graphics& g, int num)
 {
     food += 10;
-    animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
-    animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    for(int i = 0; i < num; i++)
+    {
+        animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    }
     animations.push_back(new FeastAnim());
 }
 
-void World::doRain(Graphics& g)
+void World::doRain(Graphics& g, int num)
 {
     water += 10;
     animations.push_back(new RainAnim(g, groundPos, groundWH));
 
 }
 
-void World::doPlague(Graphics& g)
+void World::doPlague(Graphics& g, int num)
 {
     population -= 10;
-    if(men.size() > 0)
+    for(int i = 0; i < num; i++)
     {
-        animations.push_back(new ManDeathAnim(men[0].location));
-        men.erase(men.begin());
-        animations.push_back(new ManDeathAnim(men[0].location));
-        men.erase(men.begin());
+        if(men.size() > 0)
+        {
+            animations.push_back(new ManDeathAnim(men[0].location));
+            men.erase(men.begin());
+
+        }
     }
 }
 
-void World::doDrought(Graphics& g)
+void World::doDrought(Graphics& g, int num)
 {
     water -= 10;
     animations.push_back(new DroughtAnim(groundPos, groundWH));
 }
 
-void World::doWind(Graphics& g)
+void World::doWind(Graphics& g, int num)
 {
     environment -= 10;
-    if(trees.size() > 0)
+    for(int i = 0; i < num; i++)
     {
-        animations.push_back(new WindAnim(trees[0].location));
-        trees.erase(trees.begin());
-        animations.push_back(new WindAnim(trees[0].location));
-        trees.erase(trees.begin());
+        if(trees.size() > 0)
+        {
+            animations.push_back(new WindAnim(trees[0].location));
+            trees.erase(trees.begin());
+        }
     }
+}
+
+void World::removePlant(Graphics &g)
+{
+    int x = rand()%2;
+
+    if(x == 0)
+    {
+        if(flowers.size() > 0)
+        {
+            flowers.erase(flowers.begin());
+        }
+        else if(trees.size() > 0)
+        {
+            trees.erase(trees.begin());
+        }
+    }
+
+    else if(x == 1)
+    {
+        if(trees.size() > 0)
+        {
+            trees.erase(trees.begin());
+        }
+        else if(flowers.size() > 0)
+        {
+            flowers.erase(flowers.begin());
+        }
+    }
+}
+
+void World::dropAnimalOrMan(Graphics &g, SpriteType type)
+{
+    if(type == SpriteType::Animal)
+    {
+        animals.push_back(Sprite(g, type, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    }
+    else if(type == SpriteType::Man)
+    {
+        men.push_back(Sprite(g, type, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+    }
+}
+
+void World::dropPlant(Graphics &g)
+{
+    int x = rand()%2;
+
+    if(x == 0)
+    {
+        flowers.push_back(Sprite(g, SpriteType::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+    }
+
+    else if(x == 1)
+    {
+        trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+    }
+}
+
+void World::removeAnimalOrMan(Graphics &g, SpriteType type)
+{
+    if(type == SpriteType::Animal)
+    {
+        animals.erase(animals.begin());
+    }
+    else if(type == SpriteType::Man)
+    {
+        men.erase(men.begin());
+    }
+
+}
+
+void World::justRain(Graphics &g)
+{
+    animations.push_back(new RainAnim(g, groundPos, groundWH));
+}
+
+void World::newRound(Graphics &g, int round)
+{
+    if(round%5 == 0)
+    {
+        for(int i = 0; i < continuous.size(); i++)
+        {
+            continuous[i]->execute(g);
+        }
+    }
+
 }
 
