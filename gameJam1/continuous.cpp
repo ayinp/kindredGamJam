@@ -29,6 +29,8 @@ continAnimal::continAnimal(World& world)
 
 void continAnimal::execute(mssm::Graphics &g)
 {
+    Image plusFive("plusFive.png");
+    Image minusFive("minusFive.png");
     world.food += 5;
     world.environment -= 5;
     world.dropAnimalOrMan(g, SpriteType::Animal);
@@ -43,6 +45,8 @@ continGarden::continGarden(World &world)
 
 void continGarden::execute(Graphics &g)
 {
+    Image plusFive("plusFive.png");
+    Image minusFive("minusFive.png");
     world.environment += 5;
     world.water -= 5;
     world.dropPlant(g);
@@ -56,6 +60,8 @@ continReproduction::continReproduction(World &world)
 
 void continReproduction::execute(Graphics &g)
 {
+    Image plusFive("plusFive.png");
+    Image minusFive("minusFive.png");
     world.population += 5;
     world.food -= 5;
     world.dropAnimalOrMan(g, SpriteType::Man);
@@ -70,6 +76,8 @@ continSacrifice::continSacrifice(World &world)
 
 void continSacrifice::execute(Graphics &g)
 {
+    Image plusFive("plusFive.png");
+    Image minusFive("minusFive.png");
     world.water += 5;
     world.population -= 5;
     world.justRain(g);

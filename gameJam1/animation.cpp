@@ -55,20 +55,21 @@ WindAnim::WindAnim(Vec2d treePos, Vec2d tornadoPos)
 
 void WindAnim::draw(Graphics &g)
 {
-    double tornadoWidth = 50;
-    g.rect(tornadoPos, tornadoWidth, 50, GREY, GREY);
+    g.rect(tornadoPos, 40, 50, GREY, GREY);
 }
 
 void WindAnim::update(Graphics &g)
 {
+    static Image tree("treeSprite.png");
+    static Image fallenTree("fallenTreeSprite.png");
     tornadoPos += {animFrame*5.0, 0};
     if(tornadoPos.x >= treePos.x)
     {
-        g.rect(treePos, 60, 40, GREEN, GREEN);
+        g.image(treePos, 120, 80, fallenTree);
     }
     else
     {
-        g.rect(treePos, 40, 60, GREEN, GREEN);
+        g.image(treePos, 80, 120, tree);
     }
     animFrame++;
 }

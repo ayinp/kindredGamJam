@@ -25,9 +25,16 @@ public:
     std::vector<Sprite> trees;
     std::vector<Animation*> animations;
     std::vector<Continuous*> continuous;
+    Vec2d foodLoc;
+    Vec2d popLoc;
+    Vec2d enviLoc;
+    Vec2d waterLoc;
     int x = 0;
+    Vec2d cloud1Pos;
+    Vec2d cloud2Pos;
+    Vec2d cloud3Pos;
 public:
-    World();
+    World(mssm::Graphics &g);
     void draw(mssm::Graphics& g, int round);
     void handleCard(mssm::Graphics& g, CardType type, int round);
     void startScreen(mssm::Graphics& g);
@@ -49,6 +56,7 @@ public:
     void removeAnimalOrMan(mssm::Graphics& g, SpriteType type);
     void justRain(mssm::Graphics& g);
     void newRound(mssm::Graphics& g, int round);
+    mssm::Color barColor(int whichStat);
 };
 
 #endif // WORLD_H

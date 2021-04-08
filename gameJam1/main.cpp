@@ -46,7 +46,7 @@ void graphicsMain(Graphics& g)
 {
     srand(time(nullptr));
     // world
-    World world;
+    World world(g);
     Vec2d groundPos{0, (g.height()/16)*8};
     Vec2d groundWH{g.width(), 50};
     world.groundPos = groundPos;
