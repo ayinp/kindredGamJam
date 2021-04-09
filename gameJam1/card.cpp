@@ -6,8 +6,8 @@
 using namespace mssm;
 using namespace std;
 
-Card::Card(Vec2d location, CardType type)
-    :location{location}, type{type}
+Card::Card(Vec2d location, CardType type, bool hover)
+    :location{location}, type{type}, hover{hover}
 {
     switch(type)
     {
@@ -27,7 +27,7 @@ Card::Card(Vec2d location, CardType type)
     }
 }
 
-void Card::draw(Graphics& g, bool hover)
+void Card::draw(Graphics& g)
 {
     Color highlight;
     if(inCard(g.mousePos()) && hover)
@@ -61,7 +61,7 @@ void Card::draw(Graphics& g, bool hover)
         case CardType::Animal:
             message = "ANIMAL: This card places an animal into your world";
             effect = "+5 food, -5 environment";
-            typeOfCard = "type: CONTINUOUS, this will happen once per turn";
+            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
             break;
         case CardType::Drought:
             message = "DROUGHT: This card will cause a short drought";
@@ -71,7 +71,7 @@ void Card::draw(Graphics& g, bool hover)
         case CardType::Garden:
             message = "GARDEN: This card places a garden into your world";
             effect = "+5 environment, -5 water";
-            typeOfCard = "type: CONTINUOUS, this will happen once per turn";
+            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
             break;
         case CardType::Plague:
             message = "PLAGUE: This card will cause a small plague";
@@ -81,7 +81,7 @@ void Card::draw(Graphics& g, bool hover)
         case CardType::Reproduction:
             message = "REPRODUCTION: This card will make children continuously";
             effect = "+5 population, -5 food";
-            typeOfCard = "type: CONTINUOUS, this will happen once per turn";
+            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
             break;
         case CardType::Rain:
             message = "RAIN: This card will cause a rain storm";
@@ -96,7 +96,7 @@ void Card::draw(Graphics& g, bool hover)
         case CardType::Sacrifice:
             message = "SACRIFICE: This card will cause regular sacrifices to the god of water";
             effect = "+5 water, -5 population";
-            typeOfCard = "type: CONTINUOUS, this will happen once per turn";
+            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
             break;
 
         }

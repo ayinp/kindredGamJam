@@ -98,31 +98,31 @@ ManDeathAnim::ManDeathAnim(Vec2d manPos, bool facingLeft, int whichMan)
 
 void ManDeathAnim::draw(Graphics &g)
 {
-    Image sheep("sheep.png");
+    Image deadMen("deadmen.png");
     if(facingLeft)
     {
         switch(whichMan)
         {
         case 0:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 0, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 0, 0, 12, 12);
             break;
         case 1:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 24, 0, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 24, 0, 12, 12);
             break;
         case 2:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 12, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 0, 12, 12, 12);
             break;
         case 3:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 24, 12, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 24, 12, 12, 12);
             break;
         case 4:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 24, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 0, 24, 12, 12);
             break;
         case 5:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 24, 24, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 24, 24, 12, 12);
             break;
         case 6:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 36, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 0, 36, 12, 12);
             break;
         }
     }
@@ -131,25 +131,25 @@ void ManDeathAnim::draw(Graphics &g)
         switch(whichMan)
         {
         case 0:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 0, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 12, 0, 12, 12);
             break;
         case 1:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 36, 0, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 36, 0, 12, 12);
             break;
         case 2:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 12, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 12, 12, 12, 12);
             break;
         case 3:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 36, 12, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 36, 12, 12, 12);
             break;
         case 4:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 24, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 12, 24, 12, 12);
             break;
         case 5:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 36, 24, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 36, 24, 12, 12);
             break;
         case 6:
-            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 36, 12, 12);
+            g.image({manPos.x, manPos.y - 5}, 60, 60, deadMen, 12, 36, 12, 12);
             break;
         }
     }
@@ -197,7 +197,9 @@ DroughtAnim::DroughtAnim(Vec2d groundPos, Vec2d groundWH)
 void DroughtAnim::draw(Graphics &g)
 {
     animFrame++;
-    g.rect(groundPos, groundWH.x, groundWH.y, {139,69,19}, {139,69,19});
+    Image dryGround("dryGround.png");
+    g.image(groundPos.x, groundPos.y + 5, groundWH.x, groundWH.y, dryGround);
+    // needs art
 }
 
 void FeastAnim::draw(Graphics &g)
@@ -205,6 +207,7 @@ void FeastAnim::draw(Graphics &g)
     int width = 300;
     g.rect({(g.width()-width)/2, (g.height()/4)*3}, width, 200, WHITE, WHITE);
     animFrame++;
+    // needs art - "note" from god
 }
 
 Start::Start(std::vector<Sprite>& men, std::vector<Sprite>& animals, std::vector<Sprite>& trees, int numMen, int numAnimals, int numTrees, Vec2d groundPos, Vec2d groundWH)
@@ -235,15 +238,24 @@ void Start::draw(Graphics &g)
     }
 }
 
-killAnimalAnim::killAnimalAnim(Vec2d animalPos)
+killAnimalAnim::killAnimalAnim(Vec2d animalPos, bool facingLeft)
 {
     this->animalPos = animalPos;
+    this->facingLeft = facingLeft;
 }
 
 void killAnimalAnim::draw(Graphics &g)
 {
+    Image sheep ("sheep.png");
     animFrame++;
-    g.rect(animalPos, 50, 30, PURPLE, PURPLE);
+    if(facingLeft)
+    {
+        g.image(animalPos, 60, 60, sheep, 0, 12, 12, 12);
+    }
+    else
+    {
+        g.image(animalPos, 60, 60, sheep, 24, 0, 12, 12);
+    }
 }
 
 Numbers::Numbers(Vec2d statLoc, int numType)

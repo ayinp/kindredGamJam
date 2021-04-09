@@ -28,9 +28,10 @@ public:
     int width = 100;
     int height = 150;
     mssm::Image image;
+    bool hover;
 public:
-    Card(Vec2d location, CardType type);
-    void draw(mssm::Graphics& g, bool hover);
+    Card(Vec2d location, CardType type, bool hover);
+    void draw(mssm::Graphics& g);
     bool isEvent();
     mssm::Color innerColor();
     mssm::Color outerColor();

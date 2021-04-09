@@ -27,12 +27,13 @@ public:
     int animalHeight = 60;
     int treeWidth = 80;
     int treeHeight = 120;
-    int flowerWidth = 10;
+    int flowerWidth = 15;
     int flowerHeight = 20;
     int x = rand()%7;
     int frameRight = 0;
     int frameLeft = 12;
     int frame = 0;
+    bool doneFalling = false;
 public:
     Sprite();
     Sprite(mssm::Graphics& g, SpriteType type, mssm::Color color, Vec2d platformPos, Vec2d platformWH, Vec2d location, Vec2d velocity = {0, -10});

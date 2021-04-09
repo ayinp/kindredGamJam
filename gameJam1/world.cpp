@@ -21,6 +21,9 @@ World::World(Graphics& g)
 void World::draw(mssm::Graphics &g, int round)
 {
     // background
+    static Image cardTable("cardTable.png");
+    double tableRatio = 1.0*cardTable.height()/cardTable.width();
+    g.image({0, 0}, g.width(), g.width()*tableRatio, cardTable);
     static Image ground("ground.png");
     g.image({groundPos.x, groundPos.y + 5}, g.width(), 55, ground);
     static Image sky("background.png");
@@ -69,22 +72,6 @@ void World::draw(mssm::Graphics &g, int round)
             trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
         }
     }
-
-    // stats
-    //    int statSize = 30;
-    //    int topMar = 30;
-    //    Button pop{"population: " + to_string(population), statSize};
-    //    pop.location= {(g.width()-(pop.width/2))/5,g.height() - topMar};
-    //    pop.draw(g);
-    //    Button disFood{"food: " + to_string(food), statSize};
-    //    disFood.location = {((g.width()-(disFood.width/2))/5)*2,g.height() - topMar};
-    //    disFood.draw(g);
-    //    Button disWater{"water: " + to_string(water), statSize};
-    //    disWater.location = {((g.width()-(disWater.width/2))/5)*3,g.height() - topMar};
-    //    disWater.draw(g);
-    //    Button envi{"environment: " + to_string(environment), statSize};
-    //    envi.location = {((g.width()-(envi.width/2))/5)*4,g.height() - topMar};
-    //    envi.draw(g);
 
     // stats but better
     static Image foodBar("foodBar.png");
@@ -232,12 +219,21 @@ void World::doGarden(Graphics& g)
 
 void World::doReproduction(Graphics& g)
 {
+    bool facingLeft;
     population += 5;
     food -= 5;
     men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
     if(animals.size() > 0)
     {
-        animations.push_back(new killAnimalAnim{animals[0].location});
+        if(animals[0].velocity.x <0)
+        {
+            facingLeft = true;
+        }
+        else
+        {
+            facingLeft = false;
+        }
+        animations.push_back(new killAnimalAnim({animals[0].location}, facingLeft));
         animals.erase(animals.begin());
     }
     continuous.push_back(new continReproduction(*this));
@@ -454,10 +450,11 @@ void World::newRound(Graphics &g, int round)
 {
     if(round%5 == 0)
     {
-        for(int i = 0; i < continuous.size(); i++)
-        {
-            continuous[i]->execute(g);
-        }
+        activeContin = continuous;
+        //        for(int i = 0; i < continuous.size(); i++)
+        //        {
+        //            continuous[i]->execute(g);
+        //        }
     }
 
 }
@@ -553,5 +550,46 @@ Color World::barColor(int whichStat)
     default:
         return WHITE;
     }
+}
+
+bool World::activeAnimations()
+{
+    for(int i = 0; i < men.size(); i++)
+    {
+        if(men[i].doneFalling == false)
+        {
+            return true;
+        }
+    }
+    for(int i = 0; i < animals.size(); i++)
+    {
+        if(animals[i].doneFalling == false)
+        {
+            return true;
+        }
+    }
+    for(int i = 0; i < trees.size(); i++)
+    {
+        if(trees[i].doneFalling == false)
+        {
+            return true;
+        }
+
+    }
+    for(int i = 0; i < flowers.size(); i++)
+    {
+        if(flowers[i].doneFalling == false)
+        {
+            return true;
+        }
+    }
+    for(int i = 0; i < animations.size(); i++)
+    {
+        if(animations[i]->finished() == false)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 

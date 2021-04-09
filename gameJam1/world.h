@@ -25,6 +25,7 @@ public:
     std::vector<Sprite> trees;
     std::vector<Animation*> animations;
     std::vector<Continuous*> continuous;
+    std::vector<Continuous*> activeContin;
     Vec2d foodLoc;
     Vec2d popLoc;
     Vec2d enviLoc;
@@ -57,6 +58,11 @@ public:
     void justRain(mssm::Graphics& g);
     void newRound(mssm::Graphics& g, int round);
     mssm::Color barColor(int whichStat);
+    bool activeAnimations();
+    bool hasActiveContin()
+    {
+        return activeContin.size() != 0;
+    };
 };
 
 #endif // WORLD_H

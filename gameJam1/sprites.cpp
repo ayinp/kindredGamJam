@@ -72,57 +72,57 @@ void Sprite::drawMan(Graphics& g)
         switch(x)
         {
         case 0:
-            if(velocity.x > 0)
+            if(velocity.x >= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameRight, x*rw, imageWidth, imageHeight);
             }
-            else if(velocity.x < 0)
+            else if(velocity.x <= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameLeft, x*rw, imageWidth, imageHeight);
             }
             break;
         case 1:
-            if(velocity.x > 0)
+            if(velocity.x >= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameRight, x*rw, imageWidth, imageHeight);
             }
-            else if(velocity.x < 0)
+            else if(velocity.x <= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameLeft, x*rw, imageWidth, imageHeight);
             }
             break;
         case 2:
-            if(velocity.x > 0)
+            if(velocity.x >= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameRight, x*rw, imageWidth, imageHeight);
             }
-            else if(velocity.x < 0)
+            else if(velocity.x <= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameLeft, x*rw, imageWidth, imageHeight);
             }
             break;
         case 3:
-            if(velocity.x > 0)
+            if(velocity.x >= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameRight, x*rw, imageWidth, imageHeight);
             }
-            else if(velocity.x < 0)
+            else if(velocity.x <= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameLeft, x*rw, imageWidth, imageHeight);
             }
             break;
         case 4:
-            if(velocity.x > 0)
+            if(velocity.x >= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameRight, x*rw, imageWidth, imageHeight);
             }
-            else if(velocity.x < 0)
+            else if(velocity.x <= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameLeft, x*rw, imageWidth, imageHeight);
             }
             break;
         case 5:
-            if(velocity.x > 0)
+            if(velocity.x >= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameRight, x*rw, imageWidth, imageHeight);
             }
@@ -132,11 +132,11 @@ void Sprite::drawMan(Graphics& g)
             }
             break;
         case 6:
-            if(velocity.x > 0)
+            if(velocity.x >= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameRight, x*rw, imageWidth, imageHeight);
             }
-            else if(velocity.x < 0)
+            else if(velocity.x <= 0)
             {
                 g.image({location.x, location.y - 5}, manWidth, manHeight, men, frameLeft, x*rw, imageWidth, imageHeight);
             }
@@ -159,6 +159,7 @@ void Sprite::updateMan(Graphics& g)
             velocity = {rand()%8-10, 0};
         }
         location.y = platformPos.y + platformWH.y;
+        doneFalling = true;
     }
     if(location.x <= 0)
     {
@@ -176,13 +177,13 @@ void Sprite::updateMan(Graphics& g)
 void Sprite::drawAnimals(Graphics &g)
 {
     static Image sheep ("sheep.png");
-    if(velocity.x > 0)
+    if(velocity.x >= 0)
     {
-        g.image(location, animalWidth, animalHeight, sheep, 0, 0, 12, 12);
+        g.image({location.x, location.y - 5}, animalWidth, animalHeight, sheep, 0, 0, 12, 12);
     }
-    else if(velocity.x < 0)
+    else if(velocity.x <= 0)
     {
-        g.image(location, animalWidth, animalHeight, sheep, 12, 0, 12, 12);
+        g.image({location.x, location.y - 5}, animalWidth, animalHeight, sheep, 12, 0, 12, 12);
     }
 }
 
@@ -201,6 +202,7 @@ void Sprite::updateAnimals(Graphics &g)
             velocity = {rand()%2+3, 0};
         }
         location.y = platformPos.y + platformWH.y;
+        doneFalling = true;
     }
     if(location.x <= 0)
     {
@@ -229,12 +231,14 @@ void Sprite::updateTrees(Graphics &g)
     {
         velocity = {0, 0};
         location.y = platformPos.y + platformWH.y;
+        doneFalling = true;
     }
 }
 
 void Sprite::drawFlowers(Graphics &g)
 {
-    g.rect(location, flowerWidth, flowerHeight, color, color);
+    static Image flower("flower.png");
+    g.image(location, flowerWidth, flowerHeight, flower);
 }
 
 void Sprite::updateFlowers(Graphics &g)
@@ -245,6 +249,7 @@ void Sprite::updateFlowers(Graphics &g)
     {
         velocity = {0, 0};
         location.y = platformPos.y + platformWH.y;
+        doneFalling = true;
     }
 }
 

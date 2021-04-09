@@ -105,8 +105,9 @@ class killAnimalAnim : public Animation
 {
 public:
     Vec2d animalPos;
+    bool facingLeft;
 public:
-    killAnimalAnim(Vec2d animalPos);
+    killAnimalAnim(Vec2d animalPos, bool facingLeft);
     virtual void draw(mssm::Graphics& g) override;
 };
 
