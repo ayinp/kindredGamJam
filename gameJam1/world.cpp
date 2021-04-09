@@ -451,12 +451,46 @@ void World::newRound(Graphics &g, int round)
     if(round%5 == 0)
     {
         activeContin = continuous;
-        //        for(int i = 0; i < continuous.size(); i++)
-        //        {
-        //            continuous[i]->execute(g);
-        //        }
     }
 
+}
+
+void World::addPlus5(int location)
+{
+    switch(location)
+    {
+    case 1:
+        animations.push_back(new Numbers(popLoc, 5));
+        break;
+    case 2:
+        animations.push_back(new Numbers(enviLoc, 5));
+        break;
+    case 3:
+        animations.push_back(new Numbers(foodLoc, 5));
+        break;
+    case 4:
+        animations.push_back(new Numbers(waterLoc, 5));
+        break;
+    }
+}
+
+void World::addMinus5(int location)
+{
+    switch(location)
+    {
+    case 1:
+        animations.push_back(new Numbers(popLoc, -5));
+        break;
+    case 2:
+        animations.push_back(new Numbers(enviLoc, -5));
+        break;
+    case 3:
+        animations.push_back(new Numbers(foodLoc, -5));
+        break;
+    case 4:
+        animations.push_back(new Numbers(waterLoc, -5));
+        break;
+    }
 }
 
 Color World::barColor(int whichStat)

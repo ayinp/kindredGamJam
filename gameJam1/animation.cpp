@@ -199,15 +199,15 @@ void DroughtAnim::draw(Graphics &g)
     animFrame++;
     Image dryGround("dryGround.png");
     g.image(groundPos.x, groundPos.y + 5, groundWH.x, groundWH.y, dryGround);
-    // needs art
 }
 
 void FeastAnim::draw(Graphics &g)
 {
+    Image godMessage("godMessage.png");
+    int height = 150;
     int width = 300;
-    g.rect({(g.width()-width)/2, (g.height()/4)*3}, width, 200, WHITE, WHITE);
+    g.image({(g.width()-width)/2, (g.height()/4)*3}, width, height, godMessage);
     animFrame++;
-    // needs art - "note" from god
 }
 
 Start::Start(std::vector<Sprite>& men, std::vector<Sprite>& animals, std::vector<Sprite>& trees, int numMen, int numAnimals, int numTrees, Vec2d groundPos, Vec2d groundWH)

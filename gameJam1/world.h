@@ -57,6 +57,8 @@ public:
     void removeAnimalOrMan(mssm::Graphics& g, SpriteType type);
     void justRain(mssm::Graphics& g);
     void newRound(mssm::Graphics& g, int round);
+    void addPlus5(int location);
+    void addMinus5(int location);
     mssm::Color barColor(int whichStat);
     bool activeAnimations();
     bool hasActiveContin()

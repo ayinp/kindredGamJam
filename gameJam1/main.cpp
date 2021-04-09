@@ -260,10 +260,11 @@ void game(Graphics& g)
                 world.activeContin[0]->execute(g);
                 world.activeContin.erase(world.activeContin.begin());
             }
-            int rectHeight = 100;
-            int rectWidth = 200;
-            g.rect({0,0}, g.width(), groundPos.y, {0, 0, 0, 150}, {0, 0, 0, 150});
-            g.rect({(g.width()-rectWidth)/2, g.height()/8}, rectWidth, rectHeight, BLUE, BLUE);
+            int rectHeight = 150;
+            int rectWidth = 300;
+            g.rect({0,0}, g.width(), groundPos.y+5, {0, 0, 0, 150}, {0, 0, 0, 150});
+            Image continuousInEffect("continuousInEffect.png");
+            g.image({(g.width()-rectWidth)/2, g.height()/8}, rectWidth, rectHeight, continuousInEffect);
             for(int i = 0; i < cards.size(); i++)
             {
                 cards[i].hover = false;
@@ -332,7 +333,7 @@ void game(Graphics& g)
         }
         else if(world.food <= 0)
         {
-            winCase(g, Image("underfood.png"));
+            winCase(g, Image("underFood.png"));
             resetGame = true;
         }
         else if(world.food >=  100)
@@ -351,9 +352,9 @@ void game(Graphics& g)
             resetGame = true;
         }
 
-        else if(round >= 100)
+        else if(round >= 50)
         {
-            winCase(g, Image("success.png"));
+            winCase(g, Image("vicrory.png"));
             resetGame = true;
         }
 
