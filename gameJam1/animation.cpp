@@ -36,13 +36,28 @@ LightningAnim::LightningAnim(Vec2d animalPos, bool facingLeft)
 
 void LightningAnim::draw(mssm::Graphics &g)
 {
+    Image sheep("sheep.png");
     if(facingLeft)
     {
-    g.rect(animalPos, 50, 30, YELLOW, YELLOW);
+        if (animFrame < animLength/2)
+        {
+            g.image({animalPos.x, animalPos.y - 5}, 60, 60, sheep, 12, 12, 12, 12);
+        }
+        else if (animFrame >= animLength/2)
+        {
+            g.image({animalPos.x, animalPos.y - 10}, 60, 60, sheep, 0, 24, 12, 12);
+        }
     }
     else
     {
-        g.rect(animalPos, 50, 30, BLUE, BLUE);
+        if (animFrame < animLength/2)
+        {
+            g.image({animalPos.x, animalPos.y - 5}, 60, 60, sheep, 24, 12, 12, 12);
+        }
+        else if(animFrame >= animLength/2)
+        {
+            g.image({animalPos.x, animalPos.y - 10}, 60, 60, sheep, 12, 24, 12, 12);
+        }
     }
     animFrame++;
 }
@@ -74,23 +89,71 @@ void WindAnim::update(Graphics &g)
     animFrame++;
 }
 
-ManDeathAnim::ManDeathAnim(Vec2d manPos)
+ManDeathAnim::ManDeathAnim(Vec2d manPos, bool facingLeft, int whichMan)
 {
     this->manPos = manPos;
+    this->facingLeft = facingLeft;
+    this->whichMan = whichMan;
 }
 
 void ManDeathAnim::draw(Graphics &g)
 {
-    animFrame++;
-    if(animFrame < animLength/4)
+    Image sheep("sheep.png");
+    if(facingLeft)
     {
-        g.rect(manPos, 30, 50, RED, RED);
+        switch(whichMan)
+        {
+        case 0:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 0, 12, 12);
+            break;
+        case 1:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 24, 0, 12, 12);
+            break;
+        case 2:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 12, 12, 12);
+            break;
+        case 3:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 24, 12, 12, 12);
+            break;
+        case 4:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 24, 12, 12);
+            break;
+        case 5:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 24, 24, 12, 12);
+            break;
+        case 6:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 0, 36, 12, 12);
+            break;
+        }
     }
     else
     {
-        g.rect(manPos, 50, 30, RED, RED);
+        switch(whichMan)
+        {
+        case 0:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 0, 12, 12);
+            break;
+        case 1:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 36, 0, 12, 12);
+            break;
+        case 2:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 12, 12, 12);
+            break;
+        case 3:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 36, 12, 12, 12);
+            break;
+        case 4:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 24, 12, 12);
+            break;
+        case 5:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 36, 24, 12, 12);
+            break;
+        case 6:
+            g.image({manPos.x, manPos.y - 5}, 60, 60, sheep, 12, 36, 12, 12);
+            break;
+        }
     }
-
+    animFrame++;
 }
 
 RainAnim::RainAnim(Graphics& g, Vec2d groundPos, Vec2d groundWH)
@@ -181,4 +244,24 @@ void killAnimalAnim::draw(Graphics &g)
 {
     animFrame++;
     g.rect(animalPos, 50, 30, PURPLE, PURPLE);
+}
+
+Numbers::Numbers(Vec2d statLoc, int numType)
+{
+    this->numType = numType;
+    this->statLoc = statLoc;
+    switch(numType)
+    {
+    case 5: number.load("plusFive.png"); break;
+    case -5: number.load("minusFive.png"); break;
+    case 10: number.load("plusTen.png"); break;
+    case -10: number.load("minusTen.png"); break;
+    }
+    location = {statLoc.x, statLoc.y - 30};
+}
+
+void Numbers::draw(Graphics &g)
+{
+    g.image(location, 50, 50, number);
+    animFrame++;
 }

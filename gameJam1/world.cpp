@@ -22,7 +22,7 @@ void World::draw(mssm::Graphics &g, int round)
 {
     // background
     static Image ground("ground.png");
-    g.image({groundPos.x, groundPos.y + 5}, groundWH.x, groundWH.y, ground);
+    g.image({groundPos.x, groundPos.y + 5}, g.width(), 55, ground);
     static Image sky("background.png");
     double skyRatio = 1.0*sky.height()/sky.width();
     g.image({0, groundPos.y + groundWH.y}, g.width(), g.width()*skyRatio, sky);
@@ -215,6 +215,8 @@ void World::doAnimal(Graphics& g)
         trees.erase(trees.begin());
     }
     continuous.push_back(new continAnimal(*this));
+    animations.push_back(new Numbers(foodLoc, 5));
+    animations.push_back(new Numbers(enviLoc, -5));
 
 }
 
@@ -224,6 +226,8 @@ void World::doGarden(Graphics& g)
     water -= 5;
     flowers.push_back(Sprite(g, SpriteType::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
     continuous.push_back(new continGarden(*this));
+    animations.push_back(new Numbers(enviLoc, 5));
+    animations.push_back(new Numbers(waterLoc, -5));
 }
 
 void World::doReproduction(Graphics& g)
@@ -237,19 +241,32 @@ void World::doReproduction(Graphics& g)
         animals.erase(animals.begin());
     }
     continuous.push_back(new continReproduction(*this));
+    animations.push_back(new Numbers(popLoc, 5));
+    animations.push_back(new Numbers(foodLoc, -5));
 }
 
 void World::doSacrifice(Graphics& g)
 {
+    bool facingLeft;
     water += 5;
     population -= 5;
     animations.push_back(new RainAnim(g, groundPos, groundWH));
     if(men.size() > 0)
     {
-        animations.push_back(new ManDeathAnim(men[0].location));
+        if(men[0].velocity.x < 0)
+        {
+            facingLeft = true;
+        }
+        else
+        {
+            facingLeft = false;
+        }
+        animations.push_back(new ManDeathAnim(men[0].location, facingLeft, men[0].x));
         men.erase(men.begin());
     }
     continuous.push_back(new continSacrifice(*this));
+    animations.push_back(new Numbers(waterLoc, 5));
+    animations.push_back(new Numbers(popLoc, -5));
 }
 
 void World::doLightning(Graphics& g, int num)
@@ -270,6 +287,7 @@ void World::doLightning(Graphics& g, int num)
             }
             animations.push_back(new LightningAnim{animals[0].location, facingLeft});
             animals.erase(animals.begin());
+            animations.push_back(new Numbers(foodLoc, -10));
         }
     }
 }
@@ -281,6 +299,7 @@ void World::doTree(Graphics& g, int num)
     {
         trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
     }
+    animations.push_back(new Numbers(enviLoc, 10));
 }
 
 void World::doPerson(Graphics& g, int num)
@@ -290,6 +309,7 @@ void World::doPerson(Graphics& g, int num)
     {
         men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
     }
+    animations.push_back(new Numbers(popLoc, 10));
 }
 
 void World::doFeast(Graphics& g, int num)
@@ -300,33 +320,46 @@ void World::doFeast(Graphics& g, int num)
         animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
     }
     animations.push_back(new FeastAnim());
+    animations.push_back(new Numbers(foodLoc, 10));
 }
 
 void World::doRain(Graphics& g, int num)
 {
     water += 10;
     animations.push_back(new RainAnim(g, groundPos, groundWH));
+    animations.push_back(new Numbers(waterLoc, 10));
 
 }
 
 void World::doPlague(Graphics& g, int num)
 {
+    bool facingLeft;
     population -= 10;
     for(int i = 0; i < num; i++)
     {
         if(men.size() > 0)
         {
-            animations.push_back(new ManDeathAnim(men[0].location));
+            if(men[0].velocity.x < 0)
+            {
+                facingLeft = true;
+            }
+            else
+            {
+                facingLeft = false;
+            }
+            animations.push_back(new ManDeathAnim(men[0].location, facingLeft, men[0].x));
             men.erase(men.begin());
 
         }
     }
+    animations.push_back(new Numbers(popLoc, 10));
 }
 
 void World::doDrought(Graphics& g, int num)
 {
     water -= 10;
     animations.push_back(new DroughtAnim(groundPos, groundWH));
+    animations.push_back(new Numbers(waterLoc, -10));
 }
 
 void World::doWind(Graphics& g, int num)
@@ -340,6 +373,7 @@ void World::doWind(Graphics& g, int num)
             trees.erase(trees.begin());
         }
     }
+    animations.push_back(new Numbers(enviLoc, -10));
 }
 
 void World::removePlant(Graphics &g)
@@ -433,86 +467,86 @@ Color World::barColor(int whichStat)
     switch(whichStat)
     {
     case 1:
-        if(food > 80 && food <= 100)
+        if(food > 75 && food <= 100)
         {
             return RED;
         }
-        else if(food > 60 && food <= 80)
+        else if(food > 55 && food <= 75)
         {
             return YELLOW;
         }
-        else if(food >= 40 && food <= 60)
+        else if(food >= 45 && food <= 55)
         {
             return GREEN;
         }
-        else if (food >= 20 && food < 40)
+        else if (food >= 25 && food < 45)
         {
             return YELLOW;
         }
-        else if (food < 20)
+        else if (food < 25)
         {
             return RED;
         }
     case 2:
-        if(population > 80 && population <= 100)
+        if(population > 75 && population <= 100)
         {
             return RED;
         }
-        else if(population > 60 && population <= 80)
+        else if(population > 55 && population <= 75)
         {
             return YELLOW;
         }
-        else if(population >= 40 && population <= 60)
+        else if(population >= 45 && population <= 55)
         {
             return GREEN;
         }
-        else if (population >= 20 && population < 40)
+        else if (population >= 25 && population < 45)
         {
             return YELLOW;
         }
-        else if (population < 20)
+        else if (population < 25)
         {
             return RED;
         }
     case 3:
-        if(environment > 80 && environment <= 100)
+        if(environment > 75 && environment <= 100)
         {
             return RED;
         }
-        else if(environment > 60 && environment <= 80)
+        else if(environment > 55 && environment <= 75)
         {
             return YELLOW;
         }
-        else if(environment >= 40 && environment <= 60)
+        else if(environment >= 45 && environment <= 55)
         {
             return GREEN;
         }
-        else if (environment >= 20 && environment < 40)
+        else if (environment >= 25 && environment < 45)
         {
             return YELLOW;
         }
-        else if (environment < 20)
+        else if (environment < 25)
         {
             return RED;
         }
     case 4:
-        if(water > 80 && water <= 100)
+        if(water > 75 && water <= 100)
         {
             return RED;
         }
-        else if(water > 60 && water <= 80)
+        else if(water > 55 && water <= 75)
         {
             return YELLOW;
         }
-        else if(water >= 40 && water <= 60)
+        else if(water >= 45 && water <= 55)
         {
             return GREEN;
         }
-        else if (water >= 20 && water < 40)
+        else if (water >= 25 && water < 45)
         {
             return YELLOW;
         }
-        else if (water < 20)
+        else if (water < 25)
         {
             return RED;
         }

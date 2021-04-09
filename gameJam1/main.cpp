@@ -13,6 +13,20 @@
 
 using namespace std;
 using namespace mssm;
+
+// declarations
+void game(Graphics& g);
+void instructions(Graphics& g);
+
+// is mouse in a spot?
+bool mousePos (Vec2d mousePosition, Vec2d location, int width, int height)
+{
+    return mousePosition.x >= location.x &&
+            mousePosition.x <= location.x + width &&
+            mousePosition.y >= location.y &&
+            mousePosition.y <= location.y+height;
+}
+
 // isCardClicked
 bool isCardClicked(vector<Card> cards, Vec2d location, int& index)
 {
@@ -28,7 +42,7 @@ bool isCardClicked(vector<Card> cards, Vec2d location, int& index)
 }
 
 // card randomisation
-vector<Card> dealCards(Graphics& g,int numCards, int groundY, int spacing, int cardSpace)
+vector<Card> dealCards(int numCards, int groundY, int spacing, int cardSpace)
 {
     vector<Card> cards;
     for(int i = 0; i < numCards - 1; i++)
@@ -39,12 +53,147 @@ vector<Card> dealCards(Graphics& g,int numCards, int groundY, int spacing, int c
     return cards;
 }
 
+// welcome page
+void welcome(Graphics& g)
+{
+    while(g.draw())
+    {
+        g.clear();
+        static Image mainMenu("main_menu.png");
+        static Image begin("begin.png");
+        static Image beginSelected("beginSelected.png");
+        static Image howToPlay("howToPlay.png");
+        static Image howToPlaySelected("howToPlaySelected.png");
+        double ratio = 1.0*mainMenu.width()/mainMenu.height();
+        int buttonWidth = 300;
+        int buttonHeight = 150;
+        g.image({g.width()/2 - (g.height()*ratio)/2, 0}, g.height()*ratio, g.height(), mainMenu);
+        int betweenSpacing = (g.width() - buttonWidth*2)/3;
+        int barSpace = buttonWidth + betweenSpacing;
+        Vec2d beginPos = {betweenSpacing + 0*barSpace, g.height()/5};
+        Vec2d howToPlayPos = {betweenSpacing + barSpace, g.height()/5};
+        g.image(beginPos, buttonWidth, buttonHeight, begin);
+        g.image(howToPlayPos, buttonWidth, buttonHeight, howToPlay);
+
+        if(mousePos(g.mousePos(), beginPos, buttonWidth, buttonHeight))
+        {
+            g.image(beginPos, buttonWidth, buttonHeight, beginSelected);
+        }
+        if(mousePos(g.mousePos(), howToPlayPos, buttonWidth, buttonHeight))
+        {
+            g.image(howToPlayPos, buttonWidth, buttonHeight, howToPlaySelected);
+        }
+
+        for (const Event& e : g.events())
+        {
+            switch (e.evtType)
+            {
+            case EvtType::MousePress:
+            {
+                if(mousePos(g.mousePos(), beginPos, buttonWidth, buttonHeight))
+                {
+                    game(g);
+                }
+                if(mousePos(g.mousePos(), howToPlayPos, buttonWidth, buttonHeight))
+                {
+                    instructions(g);
+                }
+            }
+                break;
+            case EvtType::MouseRelease:
+                break;
+            case EvtType::MouseWheel:
+                break;
+            case EvtType::MouseMove:
+                break;
+            case EvtType::KeyPress:
+                break;
+            case EvtType::KeyRelease:
+                break;
+            default:
+                break;
+            }
+        }
+
+    }
+}
+
+// instructions Page
+void instructions(Graphics& g)
+{
+
+}
+
+// win case
+void winCase(Graphics& g, Image winCase)
+{
+    while(g.draw())
+    {
+        g.clear();
+        static Image mainMenu("mainMenu.png");
+        static Image mainMenuSelected("mainMenuSelected.png");
+        static Image playAgain("playAgain.png");
+        static Image playAgainSelected("playAgain.png");
+        double ratio = 1.0*mainMenu.width()/mainMenu.height();
+        int buttonWidth = 300;
+        int buttonHeight = 150;
+        g.image({g.width()/2 - (g.height()*ratio)/2, 0}, g.height()*ratio, g.height(), winCase);
+        int betweenSpacing = (g.width() - buttonWidth*2)/3;
+        int barSpace = buttonWidth + betweenSpacing;
+        Vec2d button1Pos = {betweenSpacing + 0*barSpace, g.height()/5};
+        Vec2d button2Pos = {betweenSpacing + barSpace, g.height()/5};
+        g.image(button1Pos, buttonWidth, buttonHeight, mainMenu);
+        g.image(button2Pos, buttonWidth, buttonHeight, playAgain);
+
+        if(mousePos(g.mousePos(), button1Pos, buttonWidth, buttonHeight))
+        {
+            g.image(button1Pos, buttonWidth, buttonHeight, mainMenuSelected);
+        }
+        if(mousePos(g.mousePos(), button2Pos, buttonWidth, buttonHeight))
+        {
+            g.image(button2Pos, buttonWidth, buttonHeight, playAgainSelected);
+        }
+
+        for (const Event& e : g.events())
+        {
+            switch (e.evtType)
+            {
+            case EvtType::MousePress:
+            {
+                if(mousePos(g.mousePos(), button1Pos, buttonWidth, buttonHeight))
+                {
+                    welcome(g);
+                }
+                if(mousePos(g.mousePos(), button2Pos, buttonWidth, buttonHeight))
+                {
+                    game(g);
+                }
+            }
+                break;
+            case EvtType::MouseRelease:
+                break;
+            case EvtType::MouseWheel:
+                break;
+            case EvtType::MouseMove:
+                break;
+            case EvtType::KeyPress:
+                break;
+            case EvtType::KeyRelease:
+                break;
+            default:
+                break;
+            }
+        }
+
+    }
+}
+
+
 
 
 // game
-void graphicsMain(Graphics& g)
+void game(Graphics& g)
 {
-    srand(time(nullptr));
     // world
     World world(g);
     Vec2d groundPos{0, (g.height()/16)*8};
@@ -53,7 +202,6 @@ void graphicsMain(Graphics& g)
     world.groundWH = groundWH;
 
     // sprite things
-    Vec2d manVelocity {0, -10};
     vector<Sprite> men;
 
     // card things
@@ -61,7 +209,7 @@ void graphicsMain(Graphics& g)
     Card example({0,0}, CardType::Tree);
     int spacing = (g.width()-example.width*numCards)/(numCards + 1);
     int cardSpace = example.width + spacing;
-    vector<Card> cards = dealCards(g, numCards, groundPos.y, spacing, cardSpace);
+    vector<Card> cards = dealCards(numCards, groundPos.y, spacing, cardSpace);
     Image cardBack("back.png");
 
     Card animation{{0,0}, CardType::Tree};
@@ -74,9 +222,6 @@ void graphicsMain(Graphics& g)
     while (g.draw())
     {
         g.clear();
-
-        //position of mouse
-        Vec2d mousePos = g.mousePos();
 
         // environment
         world.draw(g, round);
@@ -100,7 +245,7 @@ void graphicsMain(Graphics& g)
                 if(cards.size() <= 3)
                 {
                     cards.clear();
-                    cards = dealCards(g, numCards, groundPos.y, spacing, cardSpace);
+                    cards = dealCards(numCards, groundPos.y, spacing, cardSpace);
                     round++;
                     world.newRound(g, round);
                 }
@@ -141,9 +286,73 @@ void graphicsMain(Graphics& g)
                 break;
             }
         }
+        bool resetGame = false;
+        // win conditions
+        if(world.population <= 0)
+        {
+            winCase(g, Image("underPop.png"));
+            resetGame = true;
+        }
+        else if(world.population >=  100)
+        {
+            winCase(g, Image("overPop"));
+            resetGame = true;
+        }
+        else if(world.environment <= 0)
+        {
+            winCase(g, Image("underEnvi"));
+            resetGame = true;
+        }
+        else if(world.environment >=  100)
+        {
+            winCase(g, Image("overEnvi"));
+            resetGame = true;
+        }
+        else if(world.food <= 0)
+        {
+            winCase(g, Image("underfood"));
+            resetGame = true;
+        }
+        else if(world.food >=  100)
+        {
+            winCase(g, Image("overFood"));
+            resetGame = true;
+        }
+        else if(world.water <= 0)
+        {
+            winCase(g, Image("underWater"));
+            resetGame = true;
+        }
+        else if(world.water >=  100)
+        {
+            winCase(g, Image("overWater"));
+            resetGame = true;
+        }
 
+        else if(round >= 100)
+        {
+            winCase(g, Image("success"));
+            resetGame = true;
+        }
+
+        if(resetGame == true)
+        {
+            world.food = 50;
+            world.water = 50;
+            world.population = 50;
+            world.environment = 50;
+        }
 
     }
+}
+
+
+
+// graphics main
+void graphicsMain(Graphics& g)
+{
+    srand(time(nullptr));
+    welcome(g);
 
 }
 

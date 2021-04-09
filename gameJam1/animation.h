@@ -63,8 +63,10 @@ class ManDeathAnim : public Animation
 {
 public:
     Vec2d manPos;
+    bool facingLeft;
+    int whichMan;
 public:
-    ManDeathAnim(Vec2d manPos);
+    ManDeathAnim(Vec2d manPos, bool facingLeft, int whichMan);
     virtual void draw(mssm::Graphics& g) override;
 };
 
@@ -108,6 +110,18 @@ public:
     virtual void draw(mssm::Graphics& g) override;
 };
 
+class Numbers : public Animation
+{
+public:
+    Vec2d location;
+    int numType;
+    mssm::Image number;
+    Vec2d statLoc;
+
+public:
+    Numbers(Vec2d statLoc, int numType);
+    virtual void draw(mssm::Graphics& g) override;
+};
 
 
 
