@@ -328,7 +328,7 @@ void game(Graphics& g)
 
 
         // display round
-        g.text(20, 20, 50, "round: " + to_string(round), WHITE);
+        g.text(20, 20, 50, "round: " + to_string(round) + "/50", WHITE);
 
         //click things
         for (const Event& e : g.events())
@@ -432,10 +432,11 @@ void game(Graphics& g)
 
         if(play == false && playThrough < 1)
         {
-            int width = 300;
-            int height = 300;
+            Image scroll("scroll.png");
+            int width = 875;
+            int height = 525;
             g.rect({0, 0}, g.width(), g.height(), {0, 0, 0, 100}, {0, 0, 0, 200});
-            g.rect({(g.width()-width)/2, (g.height()-height)/2}, width, height, RED, RED);
+            g.image({(g.width()-width)/2, (g.height()-height)/2}, width, height, scroll);
 
         }
     }
