@@ -65,19 +65,20 @@ void LightningAnim::draw(mssm::Graphics &g)
 WindAnim::WindAnim(Vec2d treePos, Vec2d tornadoPos)
 {
     this->treePos = treePos;
-    this->tornadoPos = tornadoPos = {20, treePos.y};
+    this->tornadoPos = tornadoPos = {0 - 50, treePos.y};
 }
 
 void WindAnim::draw(Graphics &g)
 {
-    g.rect(tornadoPos, 40, 50, GREY, GREY);
+    Image tornado("tornado.png");
+    g.image(tornadoPos, 50, 50, tornado);
 }
 
 void WindAnim::update(Graphics &g)
 {
     static Image tree("treeSprite.png");
     static Image fallenTree("fallenTreeSprite.png");
-    tornadoPos += {animFrame*5.0, 0};
+    tornadoPos += {animFrame*2.0, 0};
     if(tornadoPos.x >= treePos.x)
     {
         g.image(treePos, 120, 80, fallenTree);

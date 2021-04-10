@@ -328,7 +328,7 @@ void game(Graphics& g)
 
 
         // display round
-        g.text(20, 20, 50, "round: " + to_string(round), WHITE);
+        g.text(20, 20, 50, "round: " + to_string(round) + "/50", WHITE);
 
         //click things
         for (const Event& e : g.events())

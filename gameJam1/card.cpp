@@ -39,88 +39,66 @@ Card::Card(Vec2d location, CardType type, bool hover)
 
 void Card::draw(Graphics& g)
 {
+    Image tree("treeDes.png");
+    Image person("personDes.png");
+    Image lightning("lightningDes.png");
+    Image wind("windDes.png");
+    Image drought("droughtDes.png");
+    Image animal("animalsDes.png");
+    Image garden("gardenDes.png");
+    Image plague("plagueDes.png");
+    Image reproduction("reproductionDes.png");
+    Image rain("rainDes.png");
+    Image feast("feastDes.png");
+    Image sacrifice("sacrificeDes.png");
+    int imageWidth = 500;
+    int imageHeight = 150;
+    Vec2d popUpLocation{(g.width() - imageWidth)/2, g.height()/16- 20};
+
     Color highlight;
     if(inCard(g.mousePos()) && hover)
     {
-        string message;
-        string effect;
-        string typeOfCard;
         highlight = WHITE;
         switch(type)
         {
         case CardType::Tree:
-            message = "TREE: This card places a tree on your planet";
-            effect = "+10 environment";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, tree);
             break;
         case CardType::Person:
-            message = "PERSON: This card places a little person on your planet";
-            effect = "+10 population";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, person);
             break;
         case CardType::Lightning:
-            message = "LIGHTNING: This card will electrocute your livestock";
-            effect = "-10 food";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, lightning);
             break;
         case CardType::Wind:
-            message = "WIND: This card will blow away your trees";
-            effect = "-10 environment";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, wind);
             break;
         case CardType::Animal:
-            message = "ANIMAL: This card places an animal into your world";
-            effect = "+5 food, -5 environment";
-            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
+            g.image(popUpLocation, imageWidth, imageHeight, animal);
             break;
         case CardType::Drought:
-            message = "DROUGHT: This card will cause a short drought";
-            effect = "-10 water";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, drought);
             break;
         case CardType::Garden:
-            message = "GARDEN: This card places a garden into your world";
-            effect = "+5 environment, -5 water";
-            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
+            g.image(popUpLocation, imageWidth, imageHeight, garden);
             break;
         case CardType::Plague:
-            message = "PLAGUE: This card will cause a small plague";
-            effect = "-10 population";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, plague);
             break;
         case CardType::Reproduction:
-            message = "REPRODUCTION: This card will make children continuously";
-            effect = "+5 population, -5 food";
-            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
+            g.image(popUpLocation, imageWidth, imageHeight, reproduction);
             break;
         case CardType::Rain:
-            message = "RAIN: This card will cause a rain storm";
-            effect = "+10 water";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, rain);
             break;
         case CardType::Feast:
-            message = "FEAST: This card will send a feast from the gods!";
-            effect = "+10 food";
-            typeOfCard = "type: EVENT, this event will happen once per placement";
+            g.image(popUpLocation, imageWidth, imageHeight, feast);
             break;
         case CardType::Sacrifice:
-            message = "SACRIFICE: This card will cause regular sacrifices to the god of water";
-            effect = "+5 water, -5 population";
-            typeOfCard = "type: CONTINUOUS, this will take effect every 5 rounds";
+            g.image(popUpLocation, imageWidth, imageHeight, sacrifice);
             break;
 
         }
-        int buttonOffset = 50;
-        int textSize = 25;
-        Button button1{typeOfCard, textSize};
-        Button button2{message, textSize};
-        Button button3{effect, textSize};
-        button1.location = {(g.width()-button1.width)/2, location.y - buttonOffset};
-        button2.location = {(g.width()-button2.width)/2, button1.location.y - buttonOffset};
-        button3.location = {(g.width()-button3.width)/2, button2.location.y - buttonOffset};
-        button1.draw(g);
-        button2.draw(g);
-        button3.draw(g);
     }
     else
     {
@@ -150,7 +128,7 @@ Color Card::innerColor()
     case CardType::Plague:       return {0,0,26};      // onyx
     case CardType::Reproduction: return {153,51,255};  // purple
     case CardType::Rain:         return {0,255,255};   // auqua
-    case CardType::Feast:      return {255,128,170}; // pink
+    case CardType::Feast:      return {255,128,170};   // pink
     case CardType::Sacrifice:    return {255,255,255}; //white
 
     }
