@@ -20,7 +20,6 @@ World::World(Graphics& g)
 
 void World::draw(mssm::Graphics &g, int round)
 {
-
     // background
     static Image cardTable("cardTable.png");
     double tableRatio = 1.0*cardTable.height()/cardTable.width();

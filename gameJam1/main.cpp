@@ -233,6 +233,12 @@ void winCase(Graphics& g, Image winCase)
     }
 }
 
+// volume
+void music(Graphics& g)
+{
+    g.music("music1.mp3");
+}
+
 
 
 
@@ -264,6 +270,9 @@ void game(Graphics& g)
     int round = 1;
     int playThrough = 0;
     bool play = false;
+
+    //volume
+//    int volume = 1;
 
     // g.draw
     while (g.draw())
@@ -330,6 +339,15 @@ void game(Graphics& g)
         // display round
         g.text(20, 20, 50, "round: " + to_string(round) + "/50", WHITE);
 
+        //volume tings
+//        static Image volumeOn("volumeOn.png");
+//        static Image volumeOnSelected("volumeOnSelected.png");
+//        static Image volumeOff("volumeOff.png");
+//        static Image volumeOffSelected("volumeOffSelected.png");
+//        Vec2d volLocation{g.width() - 50, g.height() - 50};
+//        int volWidth = 50;
+//        int volHeight = 50;
+
         //click things
         for (const Event& e : g.events())
         {
@@ -346,6 +364,20 @@ void game(Graphics& g)
                     cards.erase(cards.begin()+index);
                     animationCount = 50;
                 }
+
+//                if(mousePos(g.mousePos(), volLocation, volHeight, volWidth) && volume < 1)
+//                {
+//                    volume = 1;
+//                    g.setMusicVolume(volume);
+//                    g.setSoundVolume(volume);
+
+//                }
+//                else if(mousePos(g.mousePos(), volLocation, volHeight, volWidth) && volume == 1)
+//                {
+//                    volume = 0;
+//                    g.setMusicVolume(volume);
+//                    g.setSoundVolume(volume);
+//                }
             }
                 break;
             case EvtType::MouseRelease:
@@ -363,6 +395,29 @@ void game(Graphics& g)
             }
         }
 
+        // actually set vol
+//        if(volume == 1)
+//        {
+//            if(mousePos(g.mousePos(), volLocation, volHeight, volWidth))
+//            {
+//                g.image(volLocation, volWidth, volHeight, volumeOnSelected);
+//            }
+//            else
+//            {
+//                g.image(volLocation, volWidth, volHeight, volumeOn);
+//            }
+//        }
+//        else if(volume == 0)
+//        {
+//            if(mousePos(g.mousePos(), volLocation, volHeight, volWidth))
+//            {
+//                g.image(volLocation, volWidth, volHeight, volumeOffSelected);
+//            }
+//            else
+//            {
+//                g.image(volLocation, volWidth, volHeight, volumeOff);
+//            }
+//        }
 
         bool resetGame = false;
         // win conditions
@@ -448,7 +503,8 @@ void game(Graphics& g)
 void graphicsMain(Graphics& g)
 {
     srand(time(nullptr));
-    g.setMusicVolume(20);
+    g.setMusicVolume(0.5);
+    g.setSoundVolume(0.5);
     g.music("music1.mp3");
     welcome(g);
 
