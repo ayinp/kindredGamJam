@@ -874,7 +874,7 @@ void Graphics::draw(QWidget *pd, QPainter *painter, int width, int height, int e
         }
         musicPlayer.reset(new QMediaPlayer(pd));
         musicPlayer->setMedia(QUrl::fromLocalFile(QString::fromStdString(musicFile)));
-        musicPlayer->setVolume(musicVolume);
+        musicPlayer->setVolume(musicVolume*100);
         musicPlayer->play();
         QObject::connect(musicPlayer.get(), SIGNAL(stateChanged(QMediaPlayer::State)), ((Widget*)pd)->_parent, SLOT(musicStateChanged(QMediaPlayer::State)));
         musicFile.clear();
