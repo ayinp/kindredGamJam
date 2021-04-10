@@ -230,8 +230,8 @@ bool oStreamBuf::reallyWrite()
 namespace mssm
 {
 
-Sound::Sound(const string &filename)
-    : sound{std::make_shared<SoundInternal>(mssm::findFile(filename))}
+Sound::Sound(const string &filename, double volume)
+    : sound{std::make_shared<SoundInternal>(mssm::findFile(filename), volume)}
 {
 }
 
@@ -289,7 +289,8 @@ int Image::height()
     return pixmap ? pixmap->height() : 0;
 }
 
-SoundInternal::SoundInternal(const std::string& _filename) : filename(_filename)
+SoundInternal::SoundInternal(const std::string& _filename, double volume)
+    : filename(_filename), volume{volume}
 {
     //        sound = std::make_shared<QSoundEffect>(parent);
 }
@@ -300,7 +301,7 @@ void SoundInternal::release()
     sound.reset();
 }
 
-bool SoundInternal::play(QObject* parent)
+bool SoundInternal::play(QObject* parent, double masterSoundVolume)
 {
     bool created = false;
 
@@ -315,10 +316,12 @@ bool SoundInternal::play(QObject* parent)
     case QSoundEffect::Status::Null:
         sound->setSource(QUrl::fromLocalFile(QString::fromStdString(filename)));
         sound->setLoopCount(1);
+        sound->setVolume(volume*masterSoundVolume);
         sound->play();
         break;
     case QSoundEffect::Status::Ready:
         sound->setLoopCount(1);
+        sound->setVolume(volume*masterSoundVolume);
         sound->play();
         break;
     case QSoundEffect::Status::Loading:
@@ -871,6 +874,7 @@ void Graphics::draw(QWidget *pd, QPainter *painter, int width, int height, int e
         }
         musicPlayer.reset(new QMediaPlayer(pd));
         musicPlayer->setMedia(QUrl::fromLocalFile(QString::fromStdString(musicFile)));
+        musicPlayer->setVolume(musicVolume);
         musicPlayer->play();
         QObject::connect(musicPlayer.get(), SIGNAL(stateChanged(QMediaPlayer::State)), ((Widget*)pd)->_parent, SLOT(musicStateChanged(QMediaPlayer::State)));
         musicFile.clear();
@@ -880,7 +884,7 @@ void Graphics::draw(QWidget *pd, QPainter *painter, int width, int height, int e
     {
         for (Sound& s : sounds)
         {
-            if (s.sound->play(pd))
+            if (s.sound->play(pd, soundVolume))
             {
                 soundCache.push_back(s);
             }
