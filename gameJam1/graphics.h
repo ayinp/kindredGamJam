@@ -163,10 +163,11 @@ namespace mssm
     private:
         std::string                   filename;
         std::shared_ptr<QSoundEffect> sound;
+        double volume;
     public:
-        SoundInternal(const std::string& filename);
+        SoundInternal(const std::string& filename, double volume);
     private:
-        bool play(QObject* parent);  // returns true when first creating QSoundEffect
+        bool play(QObject* parent, double masterSoundVolume);  // returns true when first creating QSoundEffect
         int  status();
         void release();
         friend class Graphics;
@@ -178,7 +179,7 @@ namespace mssm
     private:
         std::shared_ptr<SoundInternal> sound;
     public:
-        Sound(const std::string& filename);
+        Sound(const std::string& filename, double volume = 1.0);
         friend class Graphics;
     };
 
@@ -208,6 +209,10 @@ namespace mssm
         std::vector<Event> _events;
         std::vector<Event> _cachedEvents;
         std::string title;
+
+        double      musicVolume{1.0};
+        double      soundVolume{1.0};
+
         bool        closeOnExit{false};
         bool        closed{false};
         bool        finished{false};
@@ -294,6 +299,8 @@ namespace mssm
 
         void   play(Sound sound);
         void   music(const std::string& filename);
+        void   setSoundVolume(double volume) { soundVolume = volume; }
+        void   setMusicVolume(double volume) { musicVolume = volume; }
 
         void   clear();
         bool   wasCleared() { return cleared; } // true until the next draw
