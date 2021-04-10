@@ -9,10 +9,20 @@ using namespace std;
 Card::Card(Vec2d location, CardType type, bool hover)
     :location{location}, type{type}, hover{hover}
 {
+    int x = rand()%100 +1;
     switch(type)
     {
     case CardType::Tree:         image.load("tree.png");         break;
-    case CardType::Person:       image.load("person.png");       break;
+    case CardType::Person:
+        if(x > 1)
+        {
+        image.load("betterPerson.png");
+        }
+        else
+        {
+            image.load("person.png");
+        }
+        break;
     case CardType::Lightning:    image.load("lightning.png");    break;
     case CardType::Wind:         image.load("wind.png");         break;
     case CardType::Animal:       image.load("animals.png");       break;

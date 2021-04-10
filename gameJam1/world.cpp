@@ -20,6 +20,7 @@ World::World(Graphics& g)
 
 void World::draw(mssm::Graphics &g, int round)
 {
+
     // background
     static Image cardTable("cardTable.png");
     double tableRatio = 1.0*cardTable.height()/cardTable.width();
@@ -450,6 +451,15 @@ void World::newRound(Graphics &g, int round)
 {
     if(round%5 == 0)
     {
+        for(int i = 0; i < continuous.size(); i++)
+        {
+            continuous[i]->numUsed--;
+            if(continuous[i]->numUsed <= 0)
+            {
+                continuous.erase(continuous.begin() + i);
+            }
+        }
+
         activeContin = continuous;
     }
 

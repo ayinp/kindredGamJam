@@ -10,6 +10,7 @@ class Continuous
 {
 public:
     World& world;
+    int numUsed = 3;
 public:
     Continuous(World& world);
     virtual void execute(mssm::Graphics& g);

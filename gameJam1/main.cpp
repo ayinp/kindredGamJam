@@ -16,7 +16,8 @@ using namespace mssm;
 
 // declarations
 void game(Graphics& g);
-void instructions(Graphics& g);
+void creditPage(Graphics& g);
+void begining(Graphics& g);
 
 // is mouse in a spot?
 bool mousePos (Vec2d mousePosition, Vec2d location, int width, int height)
@@ -56,14 +57,14 @@ vector<Card> dealCards(int numCards, int groundY, int spacing, int cardSpace)
 // welcome page
 void welcome(Graphics& g)
 {
+    Image mainMenu("main_menu.png");
+    Image begin("begin.png");
+    Image beginSelected("beginSelected.png");
+    Image credits("howToPlay.png");
+    Image creditsSelected("howToPlaySelected.png");
     while(g.draw())
     {
         g.clear();
-        static Image mainMenu("main_menu.png");
-        static Image begin("begin.png");
-        static Image beginSelected("beginSelected.png");
-        static Image howToPlay("howToPlay.png");
-        static Image howToPlaySelected("howToPlaySelected.png");
         double ratio = 1.0*mainMenu.width()/mainMenu.height();
         int buttonWidth = 300;
         int buttonHeight = 150;
@@ -73,7 +74,7 @@ void welcome(Graphics& g)
         Vec2d beginPos = {betweenSpacing + 0*barSpace, g.height()/5};
         Vec2d howToPlayPos = {betweenSpacing + barSpace, g.height()/5};
         g.image(beginPos, buttonWidth, buttonHeight, begin);
-        g.image(howToPlayPos, buttonWidth, buttonHeight, howToPlay);
+        g.image(howToPlayPos, buttonWidth, buttonHeight, credits);
 
         if(mousePos(g.mousePos(), beginPos, buttonWidth, buttonHeight))
         {
@@ -81,7 +82,7 @@ void welcome(Graphics& g)
         }
         if(mousePos(g.mousePos(), howToPlayPos, buttonWidth, buttonHeight))
         {
-            g.image(howToPlayPos, buttonWidth, buttonHeight, howToPlaySelected);
+            g.image(howToPlayPos, buttonWidth, buttonHeight, creditsSelected);
         }
 
         for (const Event& e : g.events())
@@ -96,7 +97,7 @@ void welcome(Graphics& g)
                 }
                 if(mousePos(g.mousePos(), howToPlayPos, buttonWidth, buttonHeight))
                 {
-                    instructions(g);
+                    creditPage(g);
                 }
             }
                 break;
@@ -119,9 +120,53 @@ void welcome(Graphics& g)
 }
 
 // instructions Page
-void instructions(Graphics& g)
+void creditPage(Graphics& g)
 {
+    Image credits("credits.png");
+    Image back("backButton.png");
+    Image backSelected("backSelected.png");
+    while(g.draw())
+    {
+        g.clear();
+        double ratio = 1.0*credits.width()/credits.height();
+        int buttonWidth = 200;
+        int buttonHeight = 100;
+        g.image({g.width()/2 - (g.height()*ratio)/2, 0}, g.height()*ratio, g.height(), credits);
+        Vec2d beginPos = {20, g.height()-buttonHeight - 20};
+        g.image(beginPos, buttonWidth, buttonHeight, back);
 
+        if(mousePos(g.mousePos(), beginPos, buttonWidth, buttonHeight))
+        {
+            g.image(beginPos, buttonWidth, buttonHeight, backSelected);
+        }
+        for (const Event& e : g.events())
+        {
+            switch (e.evtType)
+            {
+            case EvtType::MousePress:
+            {
+                if(mousePos(g.mousePos(), beginPos, buttonWidth, buttonHeight))
+                {
+                    welcome(g);
+                }
+            }
+                break;
+            case EvtType::MouseRelease:
+                break;
+            case EvtType::MouseWheel:
+                break;
+            case EvtType::MouseMove:
+                break;
+            case EvtType::KeyPress:
+                break;
+            case EvtType::KeyRelease:
+                break;
+            default:
+                break;
+            }
+        }
+
+    }
 }
 
 // win case
@@ -217,6 +262,8 @@ void game(Graphics& g)
 
     // rounds
     int round = 1;
+    int playThrough = 0;
+    bool play = false;
 
     // g.draw
     while (g.draw())
@@ -270,6 +317,13 @@ void game(Graphics& g)
                 cards[i].hover = false;
             }
         }
+        else
+        {
+            for(int i = 0; i < cards.size(); i++)
+            {
+                cards[i].hover = true;
+            }
+        }
 
 
 
@@ -283,6 +337,7 @@ void game(Graphics& g)
             {
             case EvtType::MousePress:
             {
+                play = true;
                 // men.push_back(Man{g, WHITE, manVelocity, groundPos, {g.width(), 50}});
                 int index;
                 if(isCardClicked(cards, {e.x, e.y}, index) && animationCount == 0 && world.hasActiveContin() == false)
@@ -315,47 +370,56 @@ void game(Graphics& g)
         {
             winCase(g, Image("underPop.png"));
             resetGame = true;
+            playThrough++;
         }
         else if(world.population >=  100)
         {
             winCase(g, Image("overPop.png"));
             resetGame = true;
+            playThrough++;
         }
         else if(world.environment <= 0)
         {
             winCase(g, Image("underEnvi.png"));
             resetGame = true;
+            playThrough++;
         }
         else if(world.environment >=  100)
         {
             winCase(g, Image("overEnvi.png"));
             resetGame = true;
+            playThrough++;
         }
         else if(world.food <= 0)
         {
             winCase(g, Image("underFood.png"));
             resetGame = true;
+            playThrough++;
         }
         else if(world.food >=  100)
         {
             winCase(g, Image("overFood.png"));
             resetGame = true;
+            playThrough++;
         }
         else if(world.water <= 0)
         {
             winCase(g, Image("underWater.png"));
             resetGame = true;
+            playThrough++;
         }
         else if(world.water >=  100)
         {
             winCase(g, Image("overWater.png"));
             resetGame = true;
+            playThrough++;
         }
 
         else if(round >= 50)
         {
             winCase(g, Image("vicrory.png"));
             resetGame = true;
+            playThrough++;
         }
 
         if(resetGame == true)
@@ -366,6 +430,14 @@ void game(Graphics& g)
             world.environment = 50;
         }
 
+        if(play == false && playThrough < 1)
+        {
+            int width = 300;
+            int height = 300;
+            g.rect({0, 0}, g.width(), g.height(), {0, 0, 0, 100}, {0, 0, 0, 200});
+            g.rect({(g.width()-width)/2, (g.height()-height)/2}, width, height, RED, RED);
+
+        }
     }
 }
 
