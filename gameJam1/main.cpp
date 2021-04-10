@@ -448,7 +448,8 @@ void game(Graphics& g)
 void graphicsMain(Graphics& g)
 {
     srand(time(nullptr));
-    g.music("music4.mp3");
+    g.setMusicVolume(20);
+    g.music("music1.mp3");
     welcome(g);
 
 
