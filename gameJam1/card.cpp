@@ -49,7 +49,7 @@ void Card::draw(Graphics& g)
     Image plague("plagueDes.png");
     Image reproduction("reproductionDes.png");
     Image rain("rainDes.png");
-    Image feast("feastDes.png");
+    Image feast("foodDes.png");
     Image sacrifice("sacrificeDes.png");
     int imageWidth = 500;
     int imageHeight = 150;

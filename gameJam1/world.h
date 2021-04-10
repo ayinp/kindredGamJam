@@ -34,6 +34,7 @@ public:
     Vec2d cloud1Pos;
     Vec2d cloud2Pos;
     Vec2d cloud3Pos;
+    bool sound;
 public:
     World(mssm::Graphics &g);
     void draw(mssm::Graphics& g, int round);

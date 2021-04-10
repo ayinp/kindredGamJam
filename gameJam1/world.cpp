@@ -191,6 +191,9 @@ void World::startScreen(Graphics &g)
 
 void World::doAnimal(Graphics& g)
 {
+    static Sound baa1 ("baa1.wav");
+    static Sound baa2 ("baa2.wav");
+    static Sound baa3 ("baa3.wav");
     food += 5;
     environment -= 5;
     animals.push_back(Sprite(g, SpriteType::Animal, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
@@ -206,6 +209,23 @@ void World::doAnimal(Graphics& g)
     animations.push_back(new Numbers(foodLoc, 5));
     animations.push_back(new Numbers(enviLoc, -5));
 
+    if(sound == true)
+    {
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(baa1);
+        }
+        else if(x == 1)
+        {
+            g.play(baa2);
+        }
+        else if(x == 2)
+        {
+            g.play(baa3);
+        }
+    }
+
 }
 
 void World::doGarden(Graphics& g)
@@ -216,6 +236,25 @@ void World::doGarden(Graphics& g)
     continuous.push_back(new continGarden(*this));
     animations.push_back(new Numbers(enviLoc, 5));
     animations.push_back(new Numbers(waterLoc, -5));
+    static Sound flowerPlop1 ("flower_plop1.wav");
+    static Sound flowerPlop2 ("flower_plop2.wav");
+    static Sound flowerPlop3 ("flower_plop3.wav");
+    if(sound == true)
+    {
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(flowerPlop1);
+        }
+        else if(x == 1)
+        {
+            g.play(flowerPlop2);
+        }
+        else if(x == 2)
+        {
+            g.play(flowerPlop3);
+        }
+    }
 }
 
 void World::doReproduction(Graphics& g)
@@ -240,6 +279,25 @@ void World::doReproduction(Graphics& g)
     continuous.push_back(new continReproduction(*this));
     animations.push_back(new Numbers(popLoc, 5));
     animations.push_back(new Numbers(foodLoc, -5));
+    static Sound hi1 ("hi1.wav");
+    static Sound hi2 ("hi2.wav");
+    static Sound hi3 ("hi3.wav");
+    if(sound == true)
+    {
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(hi1);
+        }
+        else if(x == 1)
+        {
+            g.play(hi2);
+        }
+        else if(x == 2)
+        {
+            g.play(hi3);
+        }
+    }
 }
 
 void World::doSacrifice(Graphics& g)
@@ -264,6 +322,27 @@ void World::doSacrifice(Graphics& g)
     continuous.push_back(new continSacrifice(*this));
     animations.push_back(new Numbers(waterLoc, 5));
     animations.push_back(new Numbers(popLoc, -5));
+    static Sound death1 ("death1.wav");
+    static Sound death2 ("death2.wav");
+    static Sound death3 ("death3.wav");
+    static Sound rain ("rain.wav");
+    if(sound == true)
+    {
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(death1);
+        }
+        else if(x == 1)
+        {
+            g.play(death2);
+        }
+        else if(x == 2)
+        {
+            g.play(death3);
+        }
+        g.play(rain);
+    }
 }
 
 void World::doLightning(Graphics& g, int num)
@@ -287,6 +366,11 @@ void World::doLightning(Graphics& g, int num)
             animations.push_back(new Numbers(foodLoc, -10));
         }
     }
+    static Sound lightening ("lightening.wav");
+    if(sound == true)
+    {
+        g.play(lightening);
+    }
 }
 
 void World::doTree(Graphics& g, int num)
@@ -297,6 +381,26 @@ void World::doTree(Graphics& g, int num)
         trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
     }
     animations.push_back(new Numbers(enviLoc, 10));
+
+    static Sound treePlop1 ("tree_plop1.wav");
+    static Sound treePlop2 ("tree_plop2.wav");
+    static Sound treePlop3 ("tree_plop3.wav");
+    if(sound == true)
+    {
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(treePlop1);
+        }
+        else if(x == 1)
+        {
+            g.play(treePlop2);
+        }
+        else if(x == 2)
+        {
+            g.play(treePlop3);
+        }
+    }
 }
 
 void World::doPerson(Graphics& g, int num)
@@ -307,6 +411,25 @@ void World::doPerson(Graphics& g, int num)
         men.push_back(Sprite(g, SpriteType::Man, YELLOW, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
     }
     animations.push_back(new Numbers(popLoc, 10));
+    static Sound hi1 ("hi1.wav");
+    static Sound hi2 ("hi2.wav");
+    static Sound hi3 ("hi3.wav");
+    if(sound == true)
+    {
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(hi1);
+        }
+        else if(x == 1)
+        {
+            g.play(hi2);
+        }
+        else if(x == 2)
+        {
+            g.play(hi3);
+        }
+    }
 }
 
 void World::doFeast(Graphics& g, int num)
@@ -318,6 +441,27 @@ void World::doFeast(Graphics& g, int num)
     }
     animations.push_back(new FeastAnim());
     animations.push_back(new Numbers(foodLoc, 10));
+    static Sound ding ("blink.wav");
+    static Sound baa1 ("baa1.wav");
+    static Sound baa2 ("baa2.wav");
+    static Sound baa3 ("baa3.wav");
+    if(sound == true)
+    {
+        g.play(ding);
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(baa1);
+        }
+        else if(x == 1)
+        {
+            g.play(baa2);
+        }
+        else if(x == 2)
+        {
+            g.play(baa3);
+        }
+    }
 }
 
 void World::doRain(Graphics& g, int num)
@@ -325,6 +469,11 @@ void World::doRain(Graphics& g, int num)
     water += 10;
     animations.push_back(new RainAnim(g, groundPos, groundWH));
     animations.push_back(new Numbers(waterLoc, 10));
+    static Sound rain ("rain.wav");
+    if(sound == true)
+    {
+        g.play(rain);
+    }
 
 }
 
@@ -350,6 +499,25 @@ void World::doPlague(Graphics& g, int num)
         }
     }
     animations.push_back(new Numbers(popLoc, 10));
+    static Sound death1 ("death1.wav");
+    static Sound death2 ("death2.wav");
+    static Sound death3 ("death3.wav");
+    if(sound == true)
+    {
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(death1);
+        }
+        else if(x == 1)
+        {
+            g.play(death2);
+        }
+        else if(x == 2)
+        {
+            g.play(death3);
+        }
+    }
 }
 
 void World::doDrought(Graphics& g, int num)
@@ -371,21 +539,65 @@ void World::doWind(Graphics& g, int num)
         }
     }
     animations.push_back(new Numbers(enviLoc, -10));
+    static Sound wind ("wind.wav");
+    if(sound == true)
+    {
+            g.play(wind);
+    }
 }
 
 void World::removePlant(Graphics &g)
 {
     int x = rand()%2;
+    static Sound flowerPlop1 ("flower_plop1.wav");
+    static Sound flowerPlop2 ("flower_plop2.wav");
+    static Sound flowerPlop3 ("flower_plop3.wav");
+    static Sound treePlop1 ("tree_plop1.wav");
+    static Sound treePlop2 ("tree_plop2.wav");
+    static Sound treePlop3 ("tree_plop3.wav");
 
     if(x == 0)
     {
         if(flowers.size() > 0)
         {
             flowers.erase(flowers.begin());
+            if(sound == true)
+            {
+                int x = rand()%3;
+                if(x == 0)
+                {
+                    g.play(flowerPlop1);
+                }
+                else if(x == 1)
+                {
+                    g.play(flowerPlop2);
+                }
+                else if(x == 2)
+                {
+                    g.play(flowerPlop3);
+                }
+            }
+
         }
         else if(trees.size() > 0)
         {
             trees.erase(trees.begin());
+            if(sound == true)
+            {
+                int x = rand()%3;
+                if(x == 0)
+                {
+                    g.play(treePlop1);
+                }
+                else if(x == 1)
+                {
+                    g.play(treePlop2);
+                }
+                else if(x == 2)
+                {
+                    g.play(treePlop3);
+                }
+            }
         }
     }
 
@@ -404,40 +616,146 @@ void World::removePlant(Graphics &g)
 
 void World::dropAnimalOrMan(Graphics &g, SpriteType type)
 {
+    static Sound baa1 ("baa1.wav");
+    static Sound baa2 ("baa2.wav");
+    static Sound baa3 ("baa3.wav");
+    static Sound hi1 ("hi1.wav");
+    static Sound hi2 ("hi2.wav");
+    static Sound hi3 ("hi3.wav");
     if(type == SpriteType::Animal)
     {
         animals.push_back(Sprite(g, type, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+        if(sound == true)
+        {
+            int x = rand()%3;
+            if(x == 0)
+            {
+                g.play(baa1);
+            }
+            else if(x == 1)
+            {
+                g.play(baa2);
+            }
+            else if(x == 2)
+            {
+                g.play(baa3);
+            }
+        }
     }
     else if(type == SpriteType::Man)
     {
         men.push_back(Sprite(g, type, RED, groundPos, groundWH, {rand()%(g.width() - 50)+25, g.height()}));
+        if(sound == true)
+        {
+            int x = rand()%3;
+            if(x == 0)
+            {
+                g.play(hi1);
+            }
+            else if(x == 1)
+            {
+                g.play(hi2);
+            }
+            else if(x == 2)
+            {
+                g.play(hi3);
+            }
+        }
     }
 }
 
 void World::dropPlant(Graphics &g)
 {
+    static Sound flowerPlop1 ("flower_plop1.wav");
+    static Sound flowerPlop2 ("flower_plop2.wav");
+    static Sound flowerPlop3 ("flower_plop3.wav");
+    static Sound treePlop1 ("tree_plop1.wav");
+    static Sound treePlop2 ("tree_plop2.wav");
+    static Sound treePlop3 ("tree_plop3.wav");
     int x = rand()%2;
 
     if(x == 0)
     {
         flowers.push_back(Sprite(g, SpriteType::Flower, PURPLE, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(flowerPlop1);
+        }
+        else if(x == 1)
+        {
+            g.play(flowerPlop2);
+        }
+        else if(x == 2)
+        {
+            g.play(flowerPlop3);
+        }
     }
 
     else if(x == 1)
     {
         trees.push_back(Sprite(g, SpriteType::Tree, CYAN, groundPos, groundWH, {rand()%(g.width() - 150)+25, g.height()}));
+
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(treePlop1);
+        }
+        else if(x == 1)
+        {
+            g.play(treePlop2);
+        }
+        else if(x == 2)
+        {
+            g.play(treePlop3);
+        }
     }
 }
 
 void World::removeAnimalOrMan(Graphics &g, SpriteType type)
 {
+    static Sound baa1 ("baa1.wav");
+    static Sound baa2 ("baa2.wav");
+    static Sound baa3 ("baa3.wav");
+    static Sound death1 ("death1.wav");
+    static Sound death2 ("death2.wav");
+    static Sound death3 ("death3.wav");
     if(type == SpriteType::Animal)
     {
         animals.erase(animals.begin());
+        int x = rand()%3;
+        if(x == 0)
+        {
+            g.play(baa1);
+        }
+        else if(x == 1)
+        {
+            g.play(baa2);
+        }
+        else if(x == 2)
+        {
+            g.play(baa3);
+        }
     }
     else if(type == SpriteType::Man)
     {
         men.erase(men.begin());
+        if(sound == true)
+        {
+            int x = rand()%3;
+            if(x == 0)
+            {
+                g.play(death1);
+            }
+            else if(x == 1)
+            {
+                g.play(death2);
+            }
+            else if(x == 2)
+            {
+                g.play(death3);
+            }
+        }
     }
 
 }
@@ -445,6 +763,11 @@ void World::removeAnimalOrMan(Graphics &g, SpriteType type)
 void World::justRain(Graphics &g)
 {
     animations.push_back(new RainAnim(g, groundPos, groundWH));
+    static Sound rain ("rain.wav");
+    if(sound == true)
+    {
+        g.play(rain);
+    }
 }
 
 void World::newRound(Graphics &g, int round)
